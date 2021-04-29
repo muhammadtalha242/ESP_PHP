@@ -1,4 +1,3 @@
-
 <body>
     <div id="wrapper">
         <nav class="navbar navbar-default navbar-cls-top " role="navigation" style="margin-bottom: 0">
@@ -34,32 +33,24 @@
                     <li>
                         <a class="active-menu" href="index.php"><i class="fa fa-dashboard "></i>Dashboard</a>
                     </li>
-					
-					 <li>
-                        <a href="branch.php"><i class="fa fa-university "></i>Branch</a>
-                    </li>
-					
-					 <li>
+
+                    <li>
                         <a href="student.php"><i class="fa fa-users "></i>ESP_Node</a>
                     </li>
-					<!-- <li>
-                        <a href="fees.php"><i class="fa fa-usd "></i>Fees</a>
+
+                    <li>
+                        <a href="branch.php"><i class="fa fa-cogs"></i>Sensors</a>
                     </li>
-					 <li>
-                        <a href="report.php"><i class="fa fa-file-text "></i>Report </a>
-                    </li> -->
-					
-					 
-					
-					<li>
-                        <a href="setting.php"><i class="fa fa-cogs "></i>Setting</a>
+
+                    <li>
+                        <a href="setting.php"><i class="fa fa-cog"></i>Setting</a>
                     </li>
-					
-					 <li>
+
+                    <li>
                         <a href="logout.php"><i class="fa fa-power-off "></i>Logout</a>
                     </li>
-					
-			
+
+
                 </ul>
 
             </div>
