@@ -10,51 +10,17 @@ foreach($_REQUEST as $key => $value)  //Save the received value to the hey varia
 	//Now we detect if we recheive the id, the password, unit, or a value to update
 if($key =="id"){
 $unit = $value;
-}	
-if($key =="pw"){
-$pass = $value;
-}	
-if($key =="un"){
-$update_number = $value;
-}
+}		
 	
-if($update_number == 1)
-{
-	if($key =="n1"){
-		$sent_nr_1 = $value;
-	}			
-}
-else if($update_number == 2)
-{
-	if($key =="n2"){
-	$sent_nr_2 = $value;
-	}			
-}
-else if($update_number == 3)
-{
-	if($key =="n3"){
-	$sent_nr_3 = $value;
-	}			
-}
-else if($update_number == 4)
-{
-	if($key =="n4"){
-	$sent_nr_4 = $value;
-	}			
+if($key =="b6"){
+$sent_bool_1 = $value;
 }	
-	
-else if($update_number == 5)
-	{
-	if($key =="b6"){
-	$sent_bool_1 = $value;
-	}	
-	if($key =="b7"){
-	$sent_bool_2 = $value;
-	}	
-	if($key =="b8"){
-	$sent_bool_3 = $value;
-	}	
-}
+if($key =="b7"){
+$sent_bool_2 = $value;
+}	
+if($key =="b8"){
+$sent_bool_3 = $value;
+}	
 }//End of foreach
 
 
@@ -67,28 +33,8 @@ if (mysqli_connect_errno()) {
 }
 
 //Now we update the values in database
-if($update_number == 1)	//If the received data is for SENT_NUMBER_1, we update that value
-	{
-		mysqli_query($con,"UPDATE ESPtable2 SET SENT_NUMBER_1 = $sent_nr_1 WHERE id=$unit AND PASSWORD=$pass");	
-	}
-else if($update_number == 2)	//The same and so on...
-	{
-		mysqli_query($con,"UPDATE ESPtable2 SET SENT_NUMBER_2 = $sent_nr_2 WHERE id=$unit AND PASSWORD=$pass");	;	
-	}
-else if($update_number == 3)
-	{
-		mysqli_query($con,"UPDATE ESPtable2 SET SENT_NUMBER_3 = $sent_nr_3 WHERE id=$unit AND PASSWORD=$pass");	;	
-	}
-else if($update_number == 4)
-	{
-		mysqli_query($con,"UPDATE ESPtable2 SET SENT_NUMBER_4 = $sent_nr_4 WHERE id=$unit AND PASSWORD=$pass");	;	
-	}
-
-else if($update_number == 5)
-	{
 		mysqli_query($con,"UPDATE ESPtable2 SET SENT_BOOL_1 = $sent_bool_1, SENT_BOOL_2 = $sent_bool_2, SENT_BOOL_3 = $sent_bool_3 
-		WHERE id=$unit AND PASSWORD=$pass");	;	
-	}
+		WHERE id=$unit");	
 
 
 
@@ -128,11 +74,3 @@ if($row['id'] == $unit){
 	
 }// End of the while loop
 ?>
-
-
-
-
-
-
-
-

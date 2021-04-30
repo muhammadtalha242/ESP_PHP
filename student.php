@@ -12,7 +12,6 @@ function debug_to_console($data)
 	echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
 };
 
-
 include("php/dbconnect.php");
 include("php/checklogin.php");
 $errormsg = '';
@@ -34,7 +33,9 @@ $balance = 0;
 $fees = '';
 $about = '';
 $branch = '';
-
+$p_r = '';
+$labelenter = '';
+$pinselect = '';
 
 if (isset($_POST['save'])) {
 
@@ -116,8 +117,29 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
     <script src="js/jquery-1.10.2.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script type='text/javascript' src='js/jquery/jquery-ui-1.10.1.custom.min.js'></script>
+    <script>
+    $(document).ready(function() {
+        $('#sensordropdown1').change(function() {
+            //Selected value
+            var inputValue = $(this).val();
 
+            //Ajax for calling php function
+            $.post('./php/sensor_fill.php', {
+                dropdownValue: inputValue
+            }, function(data) {
+                var s = String(data);
+                var S = s.split('-');
+                document.getElementById("type").innerHTML = S[0];
+                document.getElementById("p_r").innerHTML = S[1];
+                document.getElementById("iomode").innerHTML = S[2];
+                //alert('ajax completed. Response:  ' + S[0] + ", " + S[1] + ", " + S[2] + ".");
+                //do after submission operation in DOM
+            });
+        });
+    });
+    </script>
 
 </head>
 <?php
@@ -176,27 +198,93 @@ include("php/header.php");
                                             value="<?php echo $esp_name; ?>" />
                                     </div>
                                 </div>
-                            </fieldset>
-                            <div class="form-group">
-                                <div class="col-sm-8 col-sm-offset-2">
-                                    <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                    <input type="hidden" name="action" value="<?php echo $action; ?>">
-                                    <button type="submit" name="save" class="btn btn-primary">Save </button>
-                                </div>
-                            </div>
-
-                            <fieldset class="scheduler-border">
-                                <legend class="scheduler-border">Add Sensor:</legend>
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="Old"></label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="fees" name="fees"
-                                            value="<?php echo $fees; ?>"
-                                            <?php echo ($action == "update") ? "disabled" : ""; ?> />
+                                    <div class="col-sm-8 col-sm-offset-2"
+                                        style="display: -ms-flexbox!important; display:flex!important; -ms-flex-pack:center!important; justify-content:center!important;">
+                                        <input type="hidden" name="id" value="<?php echo $id; ?>">
+                                        <input type="hidden" name="action" value="<?php echo $action; ?>">
+                                        <button type="submit" name="save" class="btn btn-primary">Save </button>
                                     </div>
                                 </div>
                             </fieldset>
-
+                            <form action="student.php" method="post" id="signupForm1" class="form-horizontal">
+                                <div class="panel-body">
+                                    <fieldset class="scheduler-border">
+                                        <legend class="scheduler-border">Add Devices:</legend>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="Old">Select Sensor</label>
+                                            <div class="col-sm-3">
+                                                <select class="form-control" name=”sensors” id="sensordropdown1">
+                                                    <?php
+											$sql = "SELECT * FROM `sensors` WHERE delete_status = 0";
+											$result = mysqli_query($conn,$sql);
+											$i = 0;
+											$type1 = '';
+											$type2 = '';
+											$type3 = '';
+											$type4 = '';											
+											while($row=mysqli_fetch_assoc($result)) {
+											?>
+                                                    <option value='<?php echo $row['ID'];?>'>
+                                                        <?php echo $row['name'];?>
+                                                    </option>
+                                                    <?php
+													if($i==0){
+														echo $type1 = $row['type'];
+														echo $t1 = ($type1==0) ? 'Analog' : (($type1==1) ? 'Digital' : 'Communication');
+														echo $type2 = $row['pins_required'];
+														echo $type3 = $row['iomode'];
+													    echo $t3 = ($type3==0) ? 'Output' : (($type3==1) ? 'Input' : 'I/O');	
+													}
+													?>
+                                                    <?php $i +=1; } ?>
+                                                </select>
+                                            </div>
+                                            <label class="col-sm-2 control-label" for="Old">Add Label</label>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control" id="label" name="label"
+                                                    value="<?= $labelenter; ?>" />
+                                            </div>
+                                            <label class="col-sm-1 control-label" for="Old">Pin</label>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control" id="pin" name="pin"
+                                                    value="<?= $pinselect; ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="Old">Type</label>
+                                            <div class="col-sm-3">
+                                                <div class="form-control" id="type" name="type"
+                                                    <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
+                                                    <?= $t1; ?>
+                                                </div>
+                                            </div>
+                                            <label class="col-sm-2 control-label" for="Old">Pins Required</label>
+                                            <div class="col-sm-1">
+                                                <div class="form-control" id="p_r" name="p_r"
+                                                    <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
+                                                    <?= $type2; ?>
+                                                </div>
+                                            </div>
+                                            <label class="col-sm-2 control-label" for="Old">I/O Mode</label>
+                                            <div class="col-sm-2">
+                                                <div class="form-control" id="iomode" name="iomode"
+                                                    <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
+                                                    <?= $t3; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-8 col-sm-offset-2"
+                                                style="display: -ms-flexbox!important; display:flex!important; -ms-flex-pack:center!important; justify-content:center!important;">
+                                                <input type="hidden" name="id" value="<?php echo $id; ?>">
+                                                <input type="hidden" name="action" value="<?php echo $action; ?>">
+                                                <button type="submit" name="save" class="btn btn-primary">Add</button>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </form>
                             <link href="css/datatable/datatable.css" rel="stylesheet" />
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -213,11 +301,13 @@ include("php/header.php");
                                                     <th>Type</th>
                                                     <th>I/O Mode</th>
                                                     <th>Connected</th>
+                                                    <th>Through Pin</th>
                                                     <th>Value</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
+									if(isset($_GET['action']) && @$_GET['action'] == "edit"){
 									$sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
 									$q = $conn->query($sql);
 									$i = 1;
@@ -233,10 +323,12 @@ include("php/header.php");
 											<td>'.$temp2.'</td>
 											<td>'.$temp3.'</td>
 											<td>'.$r['connected'].'</td>
+											<td>'.$r['pin'].'</td>
 											<td>'.$r['value'].'</td>
                                         </tr>';
 										$i++;
 									}
+								}
 									?>
                                             </tbody>
                                         </table>

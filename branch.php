@@ -8,9 +8,6 @@ $iomode = '';
 $pincount = '';
 $name = '';
 $type = '';
-$branch='';
-$address='';
-$detail = '';
 $id= '';
 if(isset($_POST['save']))
 {
@@ -162,15 +159,16 @@ echo $errormsg;
                                 <div class="col-sm-10">
                                     <select type='NEW' class="form-control" id="type" name="type">
                                         <option value="">--- Select ---</option>
-                                        <option value=<?php echo $type=0;?>>Analog</option>
-                                        <option value=<?php echo $type=1;?>>Digital</option>
+                                        <option value=<?php echo $type = 0;?>>Analog</option>
+                                        <option value=<?php echo $type = 1;?>>Digital</option>
+                                        <option value=<?php echo $type = -1;?>>Communication</option>
                                     </select>
                                 </div>
                             </div>
 
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label" for="Confirm"> Pins Required</label>
+                                <label class="col-sm-2 control-label" for="Confirm">Pins Required</label>
                                 <div class="col-sm-10">
                                     <textarea class="form-control" id="pincount"
                                         name="pincount"><?php echo $pincount;?></textarea>
@@ -178,12 +176,13 @@ echo $errormsg;
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"> I/O Mode </label>
+                                <label class="col-sm-2 control-label">I/O Mode</label>
                                 <div class="col-sm-10">
                                     <select iomode='NEW' class="form-control" id="iomode" name="iomode">
                                         <option value="">--- Select ---</option>
-                                        <option value=<?php echo $iomode=0;?>>Output</option>
-                                        <option value=<?php echo $iomode=1;?>>Input</option>
+                                        <option value=<?php echo $iomode = 0;?>>Output</option>
+                                        <option value=<?php echo $iomode = 1;?>>Input</option>
+                                        <option value=<?php echo $iomode = -1;?>>I/O</option>
                                     </select>
                                 </div>
                             </div>
@@ -271,7 +270,7 @@ echo $errormsg;
                     <table class="table table-striped table-bordered table-hover" id="tSortable22">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>Sr No.</th>
                                 <th>Name</th>
                                 <th>Type</th>
                                 <th>Pins Required</th>
@@ -287,9 +286,9 @@ echo $errormsg;
 									while($r = $q->fetch_assoc())
 									{
 										$temp = $r['type'];
-										$temp2 = ($temp==0) ? 'Analog' : 'Digital';
+										$temp2 = ($temp==0) ? 'Analog' : (($temp==1) ? 'Digital' : 'Communication');
 										$temp = $r['iomode'];
-										$temp3 = ($temp==0) ? 'Output' : 'Input';
+										$temp3 = ($temp==0) ? 'Output' : (($temp==1) ? 'Input' : 'I/O');
 									echo '<tr>
                                             <td>'.$i.'</td>
                                             <td>'.$r['name'].'</td>
