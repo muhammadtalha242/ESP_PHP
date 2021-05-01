@@ -485,7 +485,7 @@ include("php/header.php");
 							?>
 						</div>
 						<div class='bg-danger text-white col-md-6 display-main' id='digital-input'>digital-input</div>
-						<div class='bg-danger text-white col-md-6 display-main' id='analog-input'>Analog-input</div>
+						<div class=' text-white col-md-6 display-main' id='analog-input'></div>
 						<div class='bg-danger text-white col-sm-10 col-sm-offset-1 display-main' id='digital-output'>digital-Output</div>
 
 						<?php
@@ -506,9 +506,9 @@ include("php/header.php");
 										$(`<div class='digital_input_div'><button class='digital_input_btn' disabled></button> <span class='digital_input_span'>${label}</span> </div>`).appendTo("#digital-input");
 									</script>
 								<?php } else { ?>
-									<!-- <div id="chartContainer" style="height: 370px; width: 370px"></div> -->
 									<script>
-										$("<div id='chartContainer' style='height: 350px; width:700px'></div>").appendTo("#analog-input")
+										var label = '<?php echo $SensorLabel; ?>'
+										$(`<div id=${label} style='height: 300px; width:700px'></div>`).appendTo("#analog-input")
 										<?php
 
 										$dataPoints = array(
@@ -528,11 +528,11 @@ include("php/header.php");
 
 										function SimpleLineChart() {
 
-											var chart = new CanvasJS.Chart("chartContainer", {
+											var chart = new CanvasJS.Chart(label, {
 												animationEnabled: true,
 												theme: "light2",
 												title: {
-													text: "Simple Line Chart"
+													text: label
 												},
 												axisY: {
 													includeZero: false
