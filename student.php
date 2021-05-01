@@ -44,7 +44,7 @@ if (isset($_POST['save'])) {
 
 
 	if ($_POST['action'] == "add") {
-	
+
 
 		$q1 = $conn->query("INSERT INTO esp32 (eps_id,esp_name,connected) VALUES ('$esp_id','$esp_name','$connected')");
 
@@ -96,334 +96,327 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="<?php echo $sec ?>;URL='<?php echo $page ?>'">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>egnion_yomi</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="refresh" content="<?php echo $sec ?>;URL='<?php echo $page ?>'">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>egnion_yomi</title>
 
-    <!-- BOOTSTRAP STYLES-->
-    <link href="css/bootstrap.css" rel="stylesheet" />
-    <!-- FONTAWESOME STYLES-->
-    <link href="css/font-awesome.css" rel="stylesheet" />
-    <!--CUSTOM BASIC STYLES-->
-    <link href="css/basic.css" rel="stylesheet" />
-    <!--CUSTOM MAIN STYLES-->
-    <link href="css/custom.css" rel="stylesheet" />
-    <!-- GOOGLE FONTS-->
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+	<!-- BOOTSTRAP STYLES-->
+	<link href="css/bootstrap.css" rel="stylesheet" />
+	<!-- FONTAWESOME STYLES-->
+	<link href="css/font-awesome.css" rel="stylesheet" />
+	<!--CUSTOM BASIC STYLES-->
+	<link href="css/basic.css" rel="stylesheet" />
+	<!--CUSTOM MAIN STYLES-->
+	<link href="css/custom.css" rel="stylesheet" />
+	<!-- GOOGLE FONTS-->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 
-    <link href="css/ui.css" rel="stylesheet" />
-    <link href="css/datepicker.css" rel="stylesheet" />
+	<link href="css/ui.css" rel="stylesheet" />
+	<link href="css/datepicker.css" rel="stylesheet" />
 
-    <script src="js/jquery-1.10.2.js"></script>
+	<script src="js/jquery-1.10.2.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script type='text/javascript' src='js/jquery/jquery-ui-1.10.1.custom.min.js'></script>
-    <script>
-    $(document).ready(function() {
-        $('#sensordropdown1').change(function() {
-            //Selected value
-            var inputValue = $(this).val();
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type='text/javascript' src='js/jquery/jquery-ui-1.10.1.custom.min.js'></script>
+	<script>
+		$(document).ready(function() {
+			$('#sensordropdown1').change(function() {
+				//Selected value
+				var inputValue = $(this).val();
 
-            //Ajax for calling php function
-            $.post('./php/sensor_fill.php', {
-                dropdownValue: inputValue
-            }, function(data) {
-                var s = String(data);
-                var S = s.split('-');
-                document.getElementById("type").innerHTML = S[0];
-                document.getElementById("p_r").innerHTML = S[1];
-                document.getElementById("iomode").innerHTML = S[2];
-                //alert('ajax completed. Response:  ' + S[0] + ", " + S[1] + ", " + S[2] + ".");
-                //do after submission operation in DOM
-            });
-        });
-    });
-    </script>
+				//Ajax for calling php function
+				$.post('./php/sensor_fill.php', {
+					dropdownValue: inputValue
+				}, function(data) {
+					var s = String(data);
+					var S = s.split('-');
+					document.getElementById("type").innerHTML = S[0];
+					document.getElementById("p_r").innerHTML = S[1];
+					document.getElementById("iomode").innerHTML = S[2];
+					//alert('ajax completed. Response:  ' + S[0] + ", " + S[1] + ", " + S[2] + ".");
+					//do after submission operation in DOM
+				});
+			});
+		});
+	</script>
 
 </head>
 <?php
 include("php/header.php");
 ?>
 <div id="page-wrapper">
-    <div id="page-inner">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="page-head-line">ESP_NODE
-                    <?php
+	<div id="page-inner">
+		<div class="row">
+			<div class="col-md-12">
+				<h1 class="page-head-line">ESP_NODE
+					<?php
 					echo (isset($_GET['action']) && @$_GET['action'] == "add" || @$_GET['action'] == "edit" || @$_GET['action'] == "view") ?
 						' <a href="student.php" class="btn btn-primary btn-sm pull-right">Back <i class="glyphicon glyphicon-arrow-right"></i></a>' : '<a href="student.php?action=add" class="btn btn-primary btn-sm pull-right"><i class="glyphicon glyphicon-plus"></i> Add </a>';
 					?>
-                </h1>
+				</h1>
 
-                <?php
+				<?php
 
 				echo $errormsg;
 				?>
-            </div>
-        </div>
+			</div>
+		</div>
 
-        <?php
+		<?php
 		if (isset($_GET['action']) && @$_GET['action'] == "add" || @$_GET['action'] == "edit") {
 		?>
 
-        <script type="text/javascript" src="js/validation/jquery.validate.min.js"></script>
-        <div class="row">
-            <div class="col-sm-10 col-sm-offset-1">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <?php if($action == "add"){
-							echo "Add ESP";
-						} else{
-							$con = mysqli_connect("localhost", "root", "", "egnion_yomi");
-							if (mysqli_connect_errno()) {
-								echo "Failed to connect to MySQL: " . mysqli_connect_error();
-							}
-							$id = @$_GET['id'];
-							$result = mysqli_query($con, "SELECT * FROM esp32 WHERE id=$id");
-							while ($row = mysqli_fetch_array($result)) {
-								$name = $row['esp_name'];
-								echo ("Edit ESP: $name, ID: $id");
-							}
-						} ?>
-                    </div>
-                    <form action="student.php" method="post" id="signupForm1" class="form-horizontal">
-                        <div class="panel-body">
-                            <fieldset class="scheduler-border">
-                                <legend class="scheduler-border">ESP Information:</legend>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="Old">Name* </label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="esp_name" name="esp_name"
-                                            value="<?php echo $esp_name; ?>" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-8 col-sm-offset-2"
-                                        style="display: -ms-flexbox!important; display:flex!important; -ms-flex-pack:center!important; justify-content:center!important;">
-                                        <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                        <input type="hidden" name="action" value="<?php echo $action; ?>">
-                                        <button type="submit" name="save" class="btn btn-primary">Save </button>
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <form action="student.php" method="post" id="signupForm1" class="form-horizontal">
-                                <div class="panel-body">
-                                    <fieldset class="scheduler-border">
-                                        <legend class="scheduler-border">Add Devices:</legend>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label" for="Old">Select Sensor</label>
-                                            <div class="col-sm-3">
-                                                <select class="form-control" name=”sensors” id="sensordropdown1">
-                                                    <?php
-											$sql = "SELECT * FROM `sensors` WHERE delete_status = 0";
-											$result = mysqli_query($conn,$sql);
-											$i = 0;
-											$type1 = '';
-											$type2 = '';
-											$type3 = '';
-											$type4 = '';											
-											while($row=mysqli_fetch_assoc($result)) {
-											?>
-                                                    <option value='<?php echo $row['ID'];?>'>
-                                                        <?php echo $row['name'];?>
-                                                    </option>
-                                                    <?php
-													if($i==0){
-														echo $type1 = $row['type'];
-														echo $t1 = ($type1==0) ? 'Analog' : (($type1==1) ? 'Digital' : 'Communication');
-														echo $type2 = $row['pins_required'];
-														echo $type3 = $row['iomode'];
-													    echo $t3 = ($type3==0) ? 'Output' : (($type3==1) ? 'Input' : 'I/O');	
+			<script type="text/javascript" src="js/validation/jquery.validate.min.js"></script>
+			<div class="row">
+				<div class="col-sm-10 col-sm-offset-1">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<?php if ($action == "add") {
+								echo "Add ESP";
+							} else {
+								$con = mysqli_connect("localhost", "root", "", "egnion_yomi");
+								if (mysqli_connect_errno()) {
+									echo "Failed to connect to MySQL: " . mysqli_connect_error();
+								}
+								$id = @$_GET['id'];
+								$result = mysqli_query($con, "SELECT * FROM esp32 WHERE id=$id");
+								while ($row = mysqli_fetch_array($result)) {
+									$name = $row['esp_name'];
+									echo ("Edit ESP: $name, ID: $id");
+								}
+							} ?>
+						</div>
+						<form action="student.php" method="post" id="signupForm1" class="form-horizontal">
+							<div class="panel-body">
+								<fieldset class="scheduler-border">
+									<legend class="scheduler-border">ESP Information:</legend>
+									<div class="form-group">
+										<label class="col-sm-2 control-label" for="Old">Name* </label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="esp_name" name="esp_name" value="<?php echo $esp_name; ?>" />
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-8 col-sm-offset-2" style="display: -ms-flexbox!important; display:flex!important; -ms-flex-pack:center!important; justify-content:center!important;">
+											<input type="hidden" name="id" value="<?php echo $id; ?>">
+											<input type="hidden" name="action" value="<?php echo $action; ?>">
+											<button type="submit" name="save" class="btn btn-primary">Save </button>
+										</div>
+									</div>
+								</fieldset>
+								<form action="student.php" method="post" id="signupForm1" class="form-horizontal">
+									<div class="panel-body">
+										<fieldset class="scheduler-border">
+											<legend class="scheduler-border">Add Devices:</legend>
+											<div class="form-group">
+												<label class="col-sm-2 control-label" for="Old">Select Sensor</label>
+												<div class="col-sm-3">
+													<select class="form-control" name=”sensors” id="sensordropdown1">
+														<?php
+														$sql = "SELECT * FROM `sensors` WHERE delete_status = 0";
+														$result = mysqli_query($conn, $sql);
+														$i = 0;
+														$type1 = '';
+														$type2 = '';
+														$type3 = '';
+														$type4 = '';
+														while ($row = mysqli_fetch_assoc($result)) {
+														?>
+															<option value='<?php echo $row['ID']; ?>'>
+																<?php echo $row['name']; ?>
+															</option>
+															<?php
+															if ($i == 0) {
+																echo $type1 = $row['type'];
+																echo $t1 = ($type1 == 0) ? 'Analog' : (($type1 == 1) ? 'Digital' : 'Communication');
+																echo $type2 = $row['pins_required'];
+																echo $type3 = $row['iomode'];
+																echo $t3 = ($type3 == 0) ? 'Output' : (($type3 == 1) ? 'Input' : 'I/O');
+															}
+															?>
+														<?php $i += 1;
+														} ?>
+													</select>
+												</div>
+												<label class="col-sm-2 control-label" for="Old">Add Label</label>
+												<div class="col-sm-2">
+													<input type="text" class="form-control" id="label" name="label" value="<?= $labelenter; ?>" />
+												</div>
+												<label class="col-sm-1 control-label" for="Old">Pin</label>
+												<div class="col-sm-2">
+													<input type="text" class="form-control" id="pin" name="pin" value="<?= $pinselect; ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label" for="Old">Type</label>
+												<div class="col-sm-3">
+													<div class="form-control" id="type" name="type" <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
+														<?= $t1; ?>
+													</div>
+												</div>
+												<label class="col-sm-2 control-label" for="Old">Pins Required</label>
+												<div class="col-sm-1">
+													<div class="form-control" id="p_r" name="p_r" <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
+														<?= $type2; ?>
+													</div>
+												</div>
+												<label class="col-sm-2 control-label" for="Old">I/O Mode</label>
+												<div class="col-sm-2">
+													<div class="form-control" id="iomode" name="iomode" <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
+														<?= $t3; ?>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-8 col-sm-offset-2" style="display: -ms-flexbox!important; display:flex!important; -ms-flex-pack:center!important; justify-content:center!important;">
+													<input type="hidden" name="id" value="<?php echo $id; ?>">
+													<input type="hidden" name="action" value="<?php echo $action; ?>">
+													<button type="submit" name="save" class="btn btn-primary">Add</button>
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</form>
+								<link href="css/datatable/datatable.css" rel="stylesheet" />
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										Manage Sensors
+									</div>
+									<div class="panel-body">
+										<div class="table-sorting table-responsive">
+											<table class="table table-striped table-bordered table-hover" id="tSortable22">
+												<thead>
+													<tr>
+														<th>Sr No.</th>
+														<th>Sensor Name</th>
+														<th>Sensor Label</th>
+														<th>Type</th>
+														<th>I/O Mode</th>
+														<th>Connected</th>
+														<th>Through Pin</th>
+														<th>Value</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php
+													if (isset($_GET['action']) && @$_GET['action'] == "edit") {
+														$sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
+														$q = $conn->query($sql);
+														$i = 1;
+														while ($r = $q->fetch_assoc()) {
+															$temp = $r['type'];
+															$temp2 = ($temp == 0) ? 'Analog' : 'Digital';
+															$temp = $r['iomode'];
+															$temp3 = ($temp == 0) ? 'Output' : 'Input';
+															echo '<tr >
+                                            <td>' . $i . '</td>
+                                            <td>' . $r['name'] . '</td>
+											<td>' . $r['label'] . '</td>
+											<td>' . $temp2 . '</td>
+											<td>' . $temp3 . '</td>
+											<td>' . $r['connected'] . '</td>
+											<td>' . $r['pin'] . '</td>
+											<td>' . $r['value'] . '</td>
+                                        </tr>';
+															$i++;
+														}
 													}
 													?>
-                                                    <?php $i +=1; } ?>
-                                                </select>
-                                            </div>
-                                            <label class="col-sm-2 control-label" for="Old">Add Label</label>
-                                            <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="label" name="label"
-                                                    value="<?= $labelenter; ?>" />
-                                            </div>
-                                            <label class="col-sm-1 control-label" for="Old">Pin</label>
-                                            <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="pin" name="pin"
-                                                    value="<?= $pinselect; ?>" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label" for="Old">Type</label>
-                                            <div class="col-sm-3">
-                                                <div class="form-control" id="type" name="type"
-                                                    <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
-                                                    <?= $t1; ?>
-                                                </div>
-                                            </div>
-                                            <label class="col-sm-2 control-label" for="Old">Pins Required</label>
-                                            <div class="col-sm-1">
-                                                <div class="form-control" id="p_r" name="p_r"
-                                                    <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
-                                                    <?= $type2; ?>
-                                                </div>
-                                            </div>
-                                            <label class="col-sm-2 control-label" for="Old">I/O Mode</label>
-                                            <div class="col-sm-2">
-                                                <div class="form-control" id="iomode" name="iomode"
-                                                    <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
-                                                    <?= $t3; ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-8 col-sm-offset-2"
-                                                style="display: -ms-flexbox!important; display:flex!important; -ms-flex-pack:center!important; justify-content:center!important;">
-                                                <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                                <input type="hidden" name="action" value="<?php echo $action; ?>">
-                                                <button type="submit" name="save" class="btn btn-primary">Add</button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                            </form>
-                            <link href="css/datatable/datatable.css" rel="stylesheet" />
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Manage Sensors
-                                </div>
-                                <div class="panel-body">
-                                    <div class="table-sorting table-responsive">
-                                        <table class="table table-striped table-bordered table-hover" id="tSortable22">
-                                            <thead>
-                                                <tr>
-                                                    <th>Sr No.</th>
-                                                    <th>Sensor Name</th>
-                                                    <th>Sensor Label</th>
-                                                    <th>Type</th>
-                                                    <th>I/O Mode</th>
-                                                    <th>Connected</th>
-                                                    <th>Through Pin</th>
-                                                    <th>Value</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-									if(isset($_GET['action']) && @$_GET['action'] == "edit"){
-									$sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
-									$q = $conn->query($sql);
-									$i = 1;
-									while ($r = $q->fetch_assoc()) {
-										$temp = $r['type'];
-										$temp2 = ($temp==0) ? 'Analog' : 'Digital';
-										$temp = $r['iomode'];
-										$temp3 = ($temp==0) ? 'Output' : 'Input';
-										echo '<tr >
-                                            <td>'.$i.'</td>
-                                            <td>'.$r['name'].'</td>
-											<td>'.$r['label'].'</td>
-											<td>'.$temp2.'</td>
-											<td>'.$temp3.'</td>
-											<td>'.$r['connected'].'</td>
-											<td>'.$r['pin'].'</td>
-											<td>'.$r['value'].'</td>
-                                        </tr>';
-										$i++;
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<script src="js/dataTable/jquery.dataTables.min.js"></script>
+								<script>
+									$(document).ready(function() {
+										$('#tSortable22').dataTable({
+											"bPaginate": true,
+											"bLengthChange": true,
+											"bFilter": true,
+											"bInfo": false,
+											"bAutoWidth": true
+										});
+
+									});
+								</script>
+							</div>
+						</form>
+					</div>
+				</div>
+				<script type="text/javascript">
+					$(document).ready(function() {
+						if ($("#signupForm1").length > 0) {
+							$("#signupForm1").validate({
+								rules: {
+									esp_name: "required",
+								},
+								errorElement: "em",
+								errorPlacement: function(error, element) {
+									// Add the `help-block` class to the error element
+									error.addClass("help-block");
+
+									// Add `has-feedback` class to the parent div.form-group
+									// in order to add icons to inputs
+									element.parents(".col-sm-10").addClass("has-feedback");
+
+									if (element.prop("type") === "checkbox") {
+										error.insertAfter(element.parent("label"));
+									} else {
+										error.insertAfter(element);
 									}
+
+									// Add the span element, if doesn't exists, and apply the icon classes to it.
+									if (!element.next("span")[0]) {
+										$("<span class='glyphicon glyphicon-remove form-control-feedback'></span>")
+											.insertAfter(element);
+									}
+								},
+								success: function(label, element) {
+									// Add the span element, if doesn't exists, and apply the icon classes to it.
+									if (!$(element).next("span")[0]) {
+										$("<span class='glyphicon glyphicon-ok form-control-feedback'></span>")
+											.insertAfter($(element));
+									}
+								},
+								highlight: function(element, errorClass, validClass) {
+									$(element).parents(".col-sm-10").addClass("has-error")
+										.removeClass("has-success");
+									$(element).next("span").addClass("glyphicon-remove")
+										.removeClass("glyphicon-ok");
+								},
+								unhighlight: function(element, errorClass, validClass) {
+									$(element).parents(".col-sm-10").addClass("has-success")
+										.removeClass("has-error");
+									$(element).next("span").addClass("glyphicon-ok").removeClass(
+										"glyphicon-remove");
 								}
-									?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <script src="js/dataTable/jquery.dataTables.min.js"></script>
-                            <script>
-                            $(document).ready(function() {
-                                $('#tSortable22').dataTable({
-                                    "bPaginate": true,
-                                    "bLengthChange": true,
-                                    "bFilter": true,
-                                    "bInfo": false,
-                                    "bAutoWidth": true
-                                });
-
-                            });
-                            </script>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <script type="text/javascript">
-            $(document).ready(function() {
-                if ($("#signupForm1").length > 0) {
-                    $("#signupForm1").validate({
-                        rules: {
-                            esp_name: "required",
-                        },
-                        errorElement: "em",
-                        errorPlacement: function(error, element) {
-                            // Add the `help-block` class to the error element
-                            error.addClass("help-block");
-
-                            // Add `has-feedback` class to the parent div.form-group
-                            // in order to add icons to inputs
-                            element.parents(".col-sm-10").addClass("has-feedback");
-
-                            if (element.prop("type") === "checkbox") {
-                                error.insertAfter(element.parent("label"));
-                            } else {
-                                error.insertAfter(element);
-                            }
-
-                            // Add the span element, if doesn't exists, and apply the icon classes to it.
-                            if (!element.next("span")[0]) {
-                                $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>")
-                                    .insertAfter(element);
-                            }
-                        },
-                        success: function(label, element) {
-                            // Add the span element, if doesn't exists, and apply the icon classes to it.
-                            if (!$(element).next("span")[0]) {
-                                $("<span class='glyphicon glyphicon-ok form-control-feedback'></span>")
-                                    .insertAfter($(element));
-                            }
-                        },
-                        highlight: function(element, errorClass, validClass) {
-                            $(element).parents(".col-sm-10").addClass("has-error")
-                                .removeClass("has-success");
-                            $(element).next("span").addClass("glyphicon-remove")
-                                .removeClass("glyphicon-ok");
-                        },
-                        unhighlight: function(element, errorClass, validClass) {
-                            $(element).parents(".col-sm-10").addClass("has-success")
-                                .removeClass("has-error");
-                            $(element).next("span").addClass("glyphicon-ok").removeClass(
-                                "glyphicon-remove");
-                        }
-                    });
-                }
-            });
-            </script>
+							});
+						}
+					});
+				</script>
 
 
-            <!--Manage ESP change.-->
-            <?php } else if (@$_GET['action'] != "view") {?>
-            <link href="css/datatable/datatable.css" rel="stylesheet" />
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Manage ESP
-                </div>
-                <div class="panel-body">
-                    <div class="table-sorting table-responsive">
-                        <table class="table table-striped table-bordered table-hover" id="tSortable22">
-                            <thead>
-                                <tr>
-                                    <th>Sr No.</th>
-                                    <th>Name</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
+				<!--Manage ESP change.-->
+			<?php } else if (@$_GET['action'] != "view") { ?>
+				<link href="css/datatable/datatable.css" rel="stylesheet" />
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Manage ESP
+					</div>
+					<div class="panel-body">
+						<div class="table-sorting table-responsive">
+							<table class="table table-striped table-bordered table-hover" id="tSortable22">
+								<thead>
+									<tr>
+										<th>Sr No.</th>
+										<th>Name</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
 									$sql = "select * from esp32 where delete_status='0'";
 									$q = $conn->query($sql);
 									$i = 1;
@@ -434,70 +427,58 @@ include("php/header.php");
                                             <td>' . $r['esp_name'] . '</td>
 
 											<td>								
-											<a href="student.php?action=edit&id=' . $r['id'] . '" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-edit"></span></a>
+											<a href="student.php?action=edit&id=' . $r['id'] . '&ESP=' . $r['esp_name'] . '" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-edit"></span></a>
 											
-											<a onclick="return confirm(\'Are you sure you want to delete this record\');" href="student.php?action=delete&id=' . $r['id'] . '" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
-											<a href="student.php?action=view&id=' . $r['id'] . '" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-eye-open"></span></a> </td>
+											<a onclick="return confirm(\'Are you sure you want to delete this record\');" href="student.php?action=delete&id=' . $r['id'] . '&ESP=' . $r['esp_name'] . '" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+											<a href="student.php?action=view&id=' . $r['id'] . '&ESP=' . $r['esp_name'] . '" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-eye-open"></span></a> </td>
                                         </tr>';
 										$i++;
 									}
 									?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <script src="js/dataTable/jquery.dataTables.min.js"></script>
-            <script>
-            $(document).ready(function() {
-                $('#tSortable22').dataTable({
-                    "bPaginate": true,
-                    "bLengthChange": true,
-                    "bFilter": true,
-                    "bInfo": false,
-                    "bAutoWidth": true
-                });
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<script src="js/dataTable/jquery.dataTables.min.js"></script>
+				<script>
+					$(document).ready(function() {
+						$('#tSortable22').dataTable({
+							"bPaginate": true,
+							"bLengthChange": true,
+							"bFilter": true,
+							"bInfo": false,
+							"bAutoWidth": true
+						});
 
-            });
-            </script>
-            <?php } ?>
+					});
+				</script>
+			<?php } ?>
 
-            <!--view action change-->
-            <?php if (isset($_GET['action']) && @$_GET['action'] == "view") { ?>
-            <script type="text/javascript" src="js/validation/jquery.validate.min.js"></script>
-            <div class="row">
-                <div class="col-sm-10 col-sm-offset-1">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <?php
-								$con = mysqli_connect("localhost", "root", "", "egnion_yomi");
-								if (mysqli_connect_errno()) {
-									echo "Failed to connect to MySQL: " . mysqli_connect_error();
-								}
+			<!--view action change-->
+			<?php if (isset($_GET['action']) && @$_GET['action'] == "view") { ?>
+				<script type="text/javascript" src="js/validation/jquery.validate.min.js"></script>
+				<div class="row">
+					<div class="col-sm-10 col-sm-offset-1">
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<?php
+
 								$id = @$_GET['id'];
-								$result = mysqli_query($con, "SELECT * FROM esp32 WHERE id=$id");
-								while ($row = mysqli_fetch_array($result)) {
-									$name = $row['esp_name'];
-									echo ("ESP: $name, ID: $id");
-								} ?>
-                        </div>
-                        <?php //We include the database_connect.php which has the data for the connection to the database
+								$name = $_GET['ESP'];
+								echo ("ESP Name: $name, ID: $id");
 
-							$con = mysqli_connect("localhost", "root", "", "dbs122647");
-							// Check the connection
-							if (mysqli_connect_errno()) {
-								echo "Failed to connect to MySQL: " . mysqli_connect_error();
-							}
-							//Again, we grab the table out of the database, name is ESPtable2 in this case
-							$result = mysqli_query($con, "SELECT * FROM ESPtable2"); //table select
+								?>
+							</div>
+							<?php 
 
 
-
-							//Now we create the table with all the values from the database	  
+							$sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
+							$q = $conn->query($sql);
 							echo "<table class='table' style='font-size: 30px;'>
 	<thead>
 		<tr>
-		<th>Boolean Indicators</th>	
+		<th>Digital Inputs</th>	
 		</tr>
 	</thead>
 	
@@ -511,6 +492,38 @@ include("php/header.php");
         <td>Boolean control 5 </td>		
       </tr>  
 		";
+							// $i = 1;
+							// while ($r = $q->fetch_assoc()) {
+							// 	$temp = $r['type'];
+							// 	$temp2 = ($temp == 0) ? 'Analog' : 'Digital';
+							// 	$temp = $r['iomode'];
+							// 	$temp3 = ($temp == 0) ? 'Output' : 'Input';
+							// 	echo '<tr >
+							//                 <td>' . $i . '</td>
+							//                 <td>' . $r['name'] . '</td>
+							// 				<td>' . $r['label'] . '</td>
+							// 				<td>' . $temp2 . '</td>
+							// 				<td>' . $temp3 . '</td>
+							// 				<td>' . $r['connected'] . '</td>
+							// 				<td>' . $r['pin'] . '</td>
+							// 				<td>' . $r['value'] . '</td>
+							//             </tr>';
+							// 	$i++;
+							// }
+
+
+							// $con = mysqli_connect("localhost", "root", "", "dbs122647");
+							// // Check the connection
+							// if (mysqli_connect_errno()) {
+							// 	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+							// }
+							// //Again, we grab the table out of the database, name is ESPtable2 in this case
+							// $result = mysqli_query($con, "SELECT * FROM ESPtable2"); //table select
+
+
+
+							//Now we create the table with all the values from the database	  
+							
 
 							//loop through the table and print the data into the table
 							while ($row = mysqli_fetch_array($result)) {
@@ -638,9 +651,9 @@ include("php/header.php");
 
 
 
-                        //Again for the second table for numeric controls. We create the table with all the values from
-                        the database
-                        <?php
+							//Again for the second table for numeric controls. We create the table with all the values from
+							the database
+							<?php
 
 							$con = mysqli_connect("localhost", "root", "", "dbs122647");
 							if (mysqli_connect_errno()) {
@@ -727,9 +740,9 @@ include("php/header.php");
 
 
 
-                        //Again for the third table for text send. We create the table with all the values from the
-                        database
-                        <?php
+							//Again for the third table for text send. We create the table with all the values from the
+							database
+							<?php
 
 							$con = mysqli_connect("localhost", "root", "", "dbs122647");
 
@@ -793,8 +806,8 @@ include("php/header.php");
 
 
 
-                        //Again for the forth table.
-                        <?php
+							//Again for the forth table.
+							<?php
 							$con = mysqli_connect("localhost", "root", "", "dbs122647");
 
 							if (mysqli_connect_errno()) {
@@ -886,8 +899,8 @@ include("php/header.php");
 
 
 
-                        //Again for the fifth table.
-                        <?php
+							//Again for the fifth table.
+							<?php
 
 							$con = mysqli_connect("localhost", "root", "", "dbs122647");
 
@@ -931,31 +944,30 @@ include("php/header.php");
 <br>
 ";
 							?>
-                        <?php } ?>
+						<?php } ?>
 
 
-                    </div>
-                    <!-- /. PAGE INNER  -->
-                </div>
-                <!-- /. PAGE WRAPPER  -->
-            </div>
-            <!-- /. WRAPPER  -->
+						</div>
+						<!-- /. PAGE INNER  -->
+					</div>
+					<!-- /. PAGE WRAPPER  -->
+				</div>
+				<!-- /. WRAPPER  -->
 
-            <div id="footer-sec">
-                School Fees Payment System | Brought To You By : <a href="http://code-projects.org/"
-                    target="_blank">Code-Projects</a>
-            </div>
-
-
-            <!-- BOOTSTRAP SCRIPTS -->
-            <script src="js/bootstrap.js"></script>
-            <!-- METISMENU SCRIPTS -->
-            <script src="js/jquery.metisMenu.js"></script>
-            <!-- CUSTOM SCRIPTS -->
-            <script src="js/custom1.js"></script>
+				<div id="footer-sec">
+					School Fees Payment System | Brought To You By : <a href="http://code-projects.org/" target="_blank">Code-Projects</a>
+				</div>
 
 
+				<!-- BOOTSTRAP SCRIPTS -->
+				<script src="js/bootstrap.js"></script>
+				<!-- METISMENU SCRIPTS -->
+				<script src="js/jquery.metisMenu.js"></script>
+				<!-- CUSTOM SCRIPTS -->
+				<script src="js/custom1.js"></script>
 
-            </body>
+
+
+				</body>
 
 </html>
