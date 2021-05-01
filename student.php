@@ -1,3 +1,5 @@
+<script src="js/canvasjs.min.js"></script>
+
 <?php
 
 //DEBUGGER
@@ -21,7 +23,7 @@ $id = "";
 $esp_name = '';
 $esp_id = 2;
 $connected = 0;
-
+$SensorLabel = "";
 
 //Unused
 // $sname='';
@@ -315,7 +317,7 @@ include("php/header.php");
 											<?php
 											if (isset($_GET['action']) && @$_GET['action'] == "edit") {
 												// $sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
-												$sql= "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$id";
+												$sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$id";
 												$q = $conn->query($sql);
 												$i = 1;
 												while ($r = $q->fetch_assoc()) {
@@ -476,460 +478,130 @@ include("php/header.php");
 							<?php
 							$id = @$_GET['id'];
 							echo ("ESP ID: $id");
-							$sql= "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$id";
+							$sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$id";
 							// $sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
 							$q = $conn->query($sql);
 
 							?>
 						</div>
-						<div class='bg-danger text-white col-md-6' id='digital-input'>digital-input</div>
-						<div class='bg-danger text-white col-md-6' id='analog-input'>Analog-input</div>
-						<div class='bg-danger text-white col-sm-10 col-sm-offset-1' id='digital-output'>digital-Output</div>
-					
+						<div class='bg-danger text-white col-md-6 display-main' id='digital-input'>digital-input</div>
+						<div class='bg-danger text-white col-md-6 display-main' id='analog-input'>Analog-input</div>
+						<div class='bg-danger text-white col-sm-10 col-sm-offset-1 display-main' id='digital-output'>digital-Output</div>
+
 						<?php
 
 						while ($r = $q->fetch_assoc()) {
-							array_push($allSensorsArr, $r);
+
 							$typ = $r['type'];
 							$Sensortype = ($typ == 0) ? 'Analog' : 'Digital';
 							$iomode = $r['iomode'];
 							$SensorIOMode = ($iomode == 0) ? 'Output' : 'Input';
 							$SensorLabel = $r['label'];
-							$sensorValue =  $r['value'];
-							$isExists = in_array($r, $allSensorsArr, TRUE);
-							print("isExists: \t "  );
-							print($isExists);
 
-							if ($Sensortype == 'Digital') {
-								if ($iomode == 'Input' && !$isExists) { 
-									array_push($allSensorsArr, $r);?> 
+							if ($typ == 1) {
+								if ($iomode == 1) { ?>
 									<script>
-										$("<button class='digital_input_btn' disabled></button>").appendTo("#digital-input");
+										var label = '<?php echo $SensorLabel; ?>'
+
+										$(`<div class='digital_input_div'><button class='digital_input_btn' disabled></button> <span class='digital_input_span'>${label}</span> </div>`).appendTo("#digital-input");
 									</script>
-								<?php } else if ($iomode == 'Output' && !$isExists) { 
-									array_push($allSensorsArr, $r);?>			
+								<?php } else { ?>
+									<!-- <div id="chartContainer" style="height: 370px; width: 370px"></div> -->
 									<script>
-										$("<button class='digital_input_btn' disabled></button>").appendTo("#analog-input");
+										$("<div id='chartContainer' style='height: 350px; width:700px'></div>").appendTo("#analog-input")
+										<?php
+
+										$dataPoints = array(
+											array("y" => 25, "label" => "Sunday"),
+											array("y" => 15, "label" => "Monday"),
+											array("y" => 25, "label" => "Tuesday"),
+											array("y" => 5, "label" => "Wednesday"),
+											array("y" => 10, "label" => "Thursday"),
+											array("y" => 0, "label" => "Friday"),
+											array("y" => 20, "label" => "Saturday"),
+											array("y" => 10, "label" => "Thursday"),
+											array("y" => 0, "label" => "Friday"),
+											array("y" => 20, "label" => "Saturday")
+										);
+
+										?>
+
+										function SimpleLineChart() {
+
+											var chart = new CanvasJS.Chart("chartContainer", {
+												animationEnabled: true,
+												theme: "light2",
+												title: {
+													text: "Simple Line Chart"
+												},
+												axisY: {
+													includeZero: false
+												},
+												data: [{
+													type: "line",
+													dataPoints: [{
+															y: 450
+														},
+														{
+															y: 414
+														},
+														{
+															y: 520,
+															indexLabel: "highest",
+															markerColor: "red",
+															markerType: "triangle"
+														},
+														{
+															y: 460
+														},
+														{
+															y: 450
+														},
+														{
+															y: 500
+														},
+														{
+															y: 480
+														},
+														{
+															y: 480
+														},
+														{
+															y: 410,
+															indexLabel: "lowest",
+															markerColor: "DarkSlateGrey",
+															markerType: "cross"
+														},
+														{
+															y: 500
+														},
+														{
+															y: 480
+														},
+														{
+															y: 510
+														}
+													]
+												}]
+											});
+											chart.render();
+
+										}
+										// $("#analog-input").load("C:\\Users\\Dexter\\Downloads\\Programs\\sample_chartjs\\examples\\10-dynamic-charts\\dynamic-multi-series-chart.html"); <
+										SimpleLineChart();
 									</script>
 								<?php } ?>
-
 							<?php } else { ?>
 								<script>
-									$("<button class='digital_input_btn' disabled></button>").appendTo("#digital-output");
+									var label = '<?php echo $SensorLabel; ?>'
+									$(`<div class='digital_input_div'><label class='switch'><input type='checkbox'><span class='slider round'></span></label><span class='digital_output_span'>${label}</span></div>`).appendTo("#digital-output");
 								</script>
 							<?php } ?>
 
 
 						<?php } ?>
 
-						//loop through the table and print the data into the table
-						while ($row = mysqli_fetch_array($result)) {
-
-						echo "<tr class='success'>";
-							$unit_id = $row['id'];
-							echo "<td>" . $row['id'] . "</td>";
-
-							$column1 = "RECEIVED_BOOL1";
-							$column2 = "RECEIVED_BOOL2";
-							$column3 = "RECEIVED_BOOL3";
-							$column4 = "RECEIVED_BOOL4";
-							$column5 = "RECEIVED_BOOL5";
-
-							$current_bool_1 = $row['RECEIVED_BOOL1'];
-							$current_bool_2 = $row['RECEIVED_BOOL2'];
-							$current_bool_3 = $row['RECEIVED_BOOL3'];
-							$current_bool_4 = $row['RECEIVED_BOOL4'];
-							$current_bool_5 = $row['RECEIVED_BOOL5'];
-
-							if ($current_bool_1 == 1) {
-							$inv_current_bool_1 = 0;
-							$text_current_bool_1 = "ON";
-							$color_current_bool_1 = "#6ed829";
-							} else {
-							$inv_current_bool_1 = 1;
-							$text_current_bool_1 = "OFF";
-							$color_current_bool_1 = "#e04141";
-							}
-
-
-							if ($current_bool_2 == 1) {
-							$inv_current_bool_2 = 0;
-							$text_current_bool_2 = "ON";
-							$color_current_bool_2 = "#6ed829";
-							} else {
-							$inv_current_bool_2 = 1;
-							$text_current_bool_2 = "OFF";
-							$color_current_bool_2 = "#e04141";
-							}
-
-
-							if ($current_bool_3 == 1) {
-							$inv_current_bool_3 = 0;
-							$text_current_bool_3 = "ON";
-							$color_current_bool_3 = "#6ed829";
-							} else {
-							$inv_current_bool_3 = 1;
-							$text_current_bool_3 = "OFF";
-							$color_current_bool_3 = "#e04141";
-							}
-
-
-							if ($current_bool_4 == 1) {
-							$inv_current_bool_4 = 0;
-							$text_current_bool_4 = "ON";
-							$color_current_bool_4 = "#6ed829";
-							} else {
-							$inv_current_bool_4 = 1;
-							$text_current_bool_4 = "OFF";
-							$color_current_bool_4 = "#e04141";
-							}
-
-
-							if ($current_bool_5 == 1) {
-							$inv_current_bool_5 = 0;
-							$text_current_bool_5 = "ON";
-							$color_current_bool_5 = "#6ed829";
-							} else {
-							$inv_current_bool_5 = 1;
-							$text_current_bool_5 = "OFF";
-							$color_current_bool_5 = "#e04141";
-							}
-
-
-							echo "<td>
-								<form action=update_values.php method='post'>
-									<input type='hidden' name='value2' value=$current_bool_1 size='15'>
-									<input type='hidden' name='value' value=$inv_current_bool_1 size='15'>
-									<input type='hidden' name='unit' value=$unit_id>
-									<input type='hidden' name='column' value=$column1>
-									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_1' value=$text_current_bool_1>
-								</form>
-							</td>";
-
-
-
-							echo "<td>
-								<form action=update_values.php method='post'>
-									<input type='hidden' name='value2' value=$current_bool_2 size='15'>
-									<input type='hidden' name='value' value=$inv_current_bool_2 size='15'>
-									<input type='hidden' name='unit' value=$unit_id>
-									<input type='hidden' name='column' value=$column2>
-									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_2' value=$text_current_bool_2>
-								</form>
-							</td>";
-
-
-							echo "<td>
-								<form action=update_values.php method='post'>
-									<input type='hidden' name='value2' value=$current_bool_3 size='15'>
-									<input type='hidden' name='value' value=$inv_current_bool_3 size='15'>
-									<input type='hidden' name='unit' value=$unit_id>
-									<input type='hidden' name='column' value=$column3>
-									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_3' value=$text_current_bool_3>
-								</form>
-							</td>";
-
-
-							echo "<td>
-								<form action=update_values.php method='post'>
-									<input type='hidden' name='value2' value=$current_bool_4 size='15'>
-									<input type='hidden' name='value' value=$inv_current_bool_4 size='15'>
-									<input type='hidden' name='unit' value=$unit_id>
-									<input type='hidden' name='column' value=$column4>
-									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_4' value=$text_current_bool_4>
-								</form>
-							</td>";
-
-
-							echo "<td>
-								<form action=update_values.php method='post'>
-									<input type='hidden' name='value2' value=$current_bool_5 size='15'>
-									<input type='hidden' name='value' value=$inv_current_bool_5 size='15'>
-									<input type='hidden' name='unit' value=$unit_id>
-									<input type='hidden' name='column' value=$column5>
-									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_5' value=$text_current_bool_5>
-								</form>
-							</td>";
-
-							echo "</tr>
-						</tbody>";
-						}
-						echo "</table>
-						<br>
-						";
-						?>
-
-
-
-
-
-						//Again for the second table for numeric controls. We create the table with all the values from
-						the database
-						<?php
-
-						$con = mysqli_connect("localhost", "root", "", "dbs122647");
-						if (mysqli_connect_errno()) {
-							echo "Failed to connect to MySQL: " . mysqli_connect_error();
-						}
-						$result = mysqli_query($con, "SELECT * FROM ESPtable2"); //table select
-
-						echo "<table class='table' style='font-size: 30px;'>
-	<thead>
-		<tr>
-		<th>Numeric controls</th>	
-		</tr>
-	</thead>
-	
-    <tbody>
-      <tr class='active'>
-        <td>CONTROL NUMBER 1</td>
-        <td>CONTROL NUMBER 2</td>
-        <td>CONTROL NUMBER 3</td>
-		<td>CONTROL NUMBER 4 </td>
-		<td>CONTROL NUMBER 5 </td>
-      </tr>  
-		";
-
-						while ($row = mysqli_fetch_array($result)) {
-
-							echo "<tr class='success'>";
-
-							$column6 = "RECEIVED_NUM1";
-							$column7 = "RECEIVED_NUM2";
-							$column8 = "RECEIVED_NUM3";
-							$column9 = "RECEIVED_NUM4";
-							$column10 = "RECEIVED_NUM5";
-
-							$current_num_1 = $row['RECEIVED_NUM1'];
-							$current_num_2 = $row['RECEIVED_NUM2'];
-							$current_num_3 = $row['RECEIVED_NUM3'];
-							$current_num_4 = $row['RECEIVED_NUM4'];
-							$current_num_5 = $row['RECEIVED_NUM5'];
-
-
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='text' name='value' style='width: 120px;' value=$current_num_1  size='15' >
-  	<input type='hidden' name='unit' style='width: 120px;' value=$unit_id >
-  	<input type='hidden' name='column' style='width: 120px;' value=$column6 >
-  	<input type= 'submit' name= 'change_but' style='width: 120px; text-align:center;' value='change'></form></td>";
-
-
-
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='text' name='value' style='width: 120px;' value=$current_num_2  size='15' >
-  	<input type='hidden' name='unit' style='width: 120px;' value=$unit_id >
-  	<input type='hidden' name='column' style='width: 120px;' value=$column7 >
-  	<input type= 'submit' name= 'change_but' style='text-align:center' value='change'></form></td>";
-
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='text' name='value' style='width: 120px;' value=$current_num_3  size='15' >
-  	<input type='hidden' name='unit' style='width: 120px;' value=$unit_id >
-  	<input type='hidden' name='column' style='width: 120px;' value=$column8 >
-  	<input type= 'submit' name= 'change_but' style='text-align:center' value='change'></form></td>";
-
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='text' name='value' style='width: 120px;' value=$current_num_4  size='15' >
-  	<input type='hidden' name='unit' style='width: 120px;' value=$unit_id >
-  	<input type='hidden' name='column' style='width: 120px;' value=$column9 >
-  	<input type= 'submit' name= 'change_but' style='text-align:center' value='change'></form></td>";
-
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='text' name='value' style='width: 120px;' value=$current_num_5  size='15' >
-  	<input type='hidden' name='unit' style='width: 120px;' value=$unit_id >
-  	<input type='hidden' name='column' style='width: 120px;' value=$column10 >
-  	<input type= 'submit' name= 'change_but' style='text-align:center' value='change'></form></td>";
-
-							echo "</tr>
-	  </tbody>";
-						}
-						echo "</table>
-<br>
-";
-						?>
-
-
-
-
-
-
-						//Again for the third table for text send. We create the table with all the values from the
-						database
-						<?php
-
-						$con = mysqli_connect("localhost", "root", "", "dbs122647");
-
-						if (mysqli_connect_errno()) {
-							echo "Failed to connect to MySQL: " . mysqli_connect_error();
-						}
-						$result = mysqli_query($con, "SELECT * FROM ESPtable2"); //table select
-
-
-
-						echo "<table class='table' style='font-size: 30px;'>
-	<thead>
-		<tr>
-		<th>Send Text to Noobix</th>	
-		</tr>
-	</thead>
-	
-    <tbody>
-      <tr class='active'>
-        <td>Text</td>        
-      </tr>  
-		";
-
-						while ($row = mysqli_fetch_array($result)) {
-
-							echo "<tr class='success'>";
-
-							$column11 = "TEXT_1";
-							$current_text_1 = $row['TEXT_1'];
-
-
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input style='width: 100%;' type='text' name='value' value=$current_text_1  size='100'>
-  	<input type='hidden' name='unit' value=$unit_id >
-  	<input type='hidden' name='column' value=$column11 >
-  	<input type= 'submit' name= 'change_but' style='text-align:center' value='Send'></form></td>";
-
-							echo "</tr>
-	  </tbody>";
-						}
-						echo "</table>
-<br>
-<br>
-<hr>";
-
-						?>
-						//Again for the forth table.
-						<?php
-						$con = mysqli_connect("localhost", "root", "", "dbs122647");
-
-						if (mysqli_connect_errno()) {
-							echo "Failed to connect to MySQL: " . mysqli_connect_error();
-						}
-
-						$result = mysqli_query($con, "SELECT * FROM ESPtable2"); //table select
-
-						echo "<table class='table' style='font-size: 30px;'>
-	<thead>
-		<tr>
-		<th>Boolean Indicators</th>	
-		</tr>
-	</thead>
-	
-    <tbody>
-      <tr class='active'>
-        <td>Noobix ID</td>
-        <td>Indicator 1</td>
-        <td>Indicator 2 </td>
-		<td>Indicator 3 </td>
-      </tr>  
-		";
-
-
-
-						while ($row = mysqli_fetch_array($result)) {
-
-							$cur_sent_bool_1 = $row['SENT_BOOL_1'];
-							$cur_sent_bool_2 = $row['SENT_BOOL_2'];
-							$cur_sent_bool_3 = $row['SENT_BOOL_3'];
-
-
-							if ($cur_sent_bool_1 == 1) {
-								$label_sent_bool_1 = "label-success";
-								$text_sent_bool_1 = "Active";
-							} else {
-								$label_sent_bool_1 = "label-danger";
-								$text_sent_bool_1 = "Inactive";
-							}
-
-
-							if ($cur_sent_bool_2 == 1) {
-								$label_sent_bool_2 = "label-success";
-								$text_sent_bool_2 = "Active";
-							} else {
-								$label_sent_bool_2 = "label-danger";
-								$text_sent_bool_2 = "Inactive";
-							}
-
-
-							if ($cur_sent_bool_3 == 1) {
-								$label_sent_bool_3 = "label-success";
-								$text_sent_bool_3 = "Active";
-							} else {
-								$label_sent_bool_3 = "label-danger";
-								$text_sent_bool_3 = "Inactive";
-							}
-
-
-							echo "<tr class='info'>";
-							$unit_id = $row['id'];
-							echo "<td>" . $row['id'] . "</td>";
-							echo "<td>
-		<span class='label $label_sent_bool_1'>"
-								. $text_sent_bool_1 . "</td>
-	    </span>";
-
-							echo "<td>
-		<span class='label $label_sent_bool_2'>"
-								. $text_sent_bool_2 . "</td>
-	    </span>";
-
-							echo "<td>
-		<span class='label $label_sent_bool_3'>"
-								. $text_sent_bool_3 . "</td>
-	    </span>";
-							echo "</tr>
-	  </tbody>";
-						}
-						echo "</table>";
-						?>
-						//Again for the fifth table.
-						<?php
-
-						$con = mysqli_connect("localhost", "root", "", "dbs122647");
-
-						if (mysqli_connect_errno()) {
-							echo "Failed to connect to MySQL: " . mysqli_connect_error();
-						}
-
-						$result = mysqli_query($con, "SELECT * FROM ESPtable2"); //table select
-
-
-						echo "<table class='table' style='font-size: 30px;'>
-	<thead>
-		<tr>
-		<th>Integer Indicators</th>	
-		</tr>
-	</thead>
-	
-    <tbody>
-      <tr class='active'>
-        <td>Received number 1</td>
-        <td>Received number 2</td>
-        <td>Received number 3 </td>
-		<td>Received number 4 </td>
-      </tr>  
-		";
-
-
-						while ($row = mysqli_fetch_array($result)) {
-
-							echo "<tr class='info'>";
-
-							echo "<td>" . $row['SENT_NUMBER_1'] . "</td>";
-							echo "<td>" . $row['SENT_NUMBER_2'] . "</td>";
-							echo "<td>" . $row['SENT_NUMBER_3'] . "</td>";
-							echo "<td>" . $row['SENT_NUMBER_4'] . "</td>";
-
-							echo "</tr>
-	</tbody>";
-						}
-						echo "</table>
-<br>
-";
-						?>
+					
 					<?php } ?>
 
 
@@ -952,7 +624,7 @@ include("php/header.php");
 			<script src="js/jquery.metisMenu.js"></script>
 			<!-- CUSTOM SCRIPTS -->
 			<script src="js/custom1.js"></script>
-
+			<!-- Canvas JS -->
 
 
 			</body>
