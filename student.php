@@ -314,7 +314,8 @@ include("php/header.php");
 										<tbody>
 											<?php
 											if (isset($_GET['action']) && @$_GET['action'] == "edit") {
-												$sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
+												// $sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
+												$sql= "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$id";
 												$q = $conn->query($sql);
 												$i = 1;
 												while ($r = $q->fetch_assoc()) {
@@ -473,52 +474,58 @@ include("php/header.php");
 					<div class="panel panel-primary">
 						<div class="panel-heading">
 							<?php
-							$con = mysqli_connect("localhost", "root", "", "egnion_yomi");
-							if (mysqli_connect_errno()) {
-								echo "Failed to connect to MySQL: " . mysqli_connect_error();
-							}
 							$id = @$_GET['id'];
-							$result = mysqli_query($con, "SELECT * FROM esp32 WHERE id=$id");
-							while ($row = mysqli_fetch_array($result)) {
-								$name = $row['esp_name'];
-								echo ("ESP: $name, ID: $id");
-							} ?>
+							echo ("ESP ID: $id");
+							$sql= "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$id";
+							// $sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
+							$q = $conn->query($sql);
+
+							?>
 						</div>
-						<?php //We include the database_connect.php which has the data for the connection to the database
+						<div class='bg-danger text-white col-md-6' id='digital-input'>digital-input</div>
+						<div class='bg-danger text-white col-md-6' id='analog-input'>Analog-input</div>
+						<div class='bg-danger text-white col-sm-10 col-sm-offset-1' id='digital-output'>digital-Output</div>
+					
+						<?php
 
-						$con = mysqli_connect("localhost", "root", "", "dbs122647");
-						// Check the connection
-						if (mysqli_connect_errno()) {
-							echo "Failed to connect to MySQL: " . mysqli_connect_error();
-						}
-						//Again, we grab the table out of the database, name is ESPtable2 in this case
-						$result = mysqli_query($con, "SELECT * FROM ESPtable2"); //table select
+						while ($r = $q->fetch_assoc()) {
+							array_push($allSensorsArr, $r);
+							$typ = $r['type'];
+							$Sensortype = ($typ == 0) ? 'Analog' : 'Digital';
+							$iomode = $r['iomode'];
+							$SensorIOMode = ($iomode == 0) ? 'Output' : 'Input';
+							$SensorLabel = $r['label'];
+							$sensorValue =  $r['value'];
+							$isExists = in_array($r, $allSensorsArr, TRUE);
+							print("isExists: \t "  );
+							print($isExists);
+
+							if ($Sensortype == 'Digital') {
+								if ($iomode == 'Input' && !$isExists) { 
+									array_push($allSensorsArr, $r);?> 
+									<script>
+										$("<button class='digital_input_btn' disabled></button>").appendTo("#digital-input");
+									</script>
+								<?php } else if ($iomode == 'Output' && !$isExists) { 
+									array_push($allSensorsArr, $r);?>			
+									<script>
+										$("<button class='digital_input_btn' disabled></button>").appendTo("#analog-input");
+									</script>
+								<?php } ?>
+
+							<?php } else { ?>
+								<script>
+									$("<button class='digital_input_btn' disabled></button>").appendTo("#digital-output");
+								</script>
+							<?php } ?>
 
 
-
-						//Now we create the table with all the values from the database	  
-						echo "<table class='table' style='font-size: 30px;'>
-	<thead>
-		<tr>
-		<th>Boolean Indicators</th>	
-		</tr>
-	</thead>
-	
-    <tbody>
-      <tr class='active'>
-        <td>Noobix ID</td>
-        <td>Boolean control 1</td>
-        <td>Boolean control 2 </td>
-		<td>Boolean control 3 </td>
-		<td>Boolean control 4</td>
-        <td>Boolean control 5 </td>		
-      </tr>  
-		";
+						<?php } ?>
 
 						//loop through the table and print the data into the table
 						while ($row = mysqli_fetch_array($result)) {
 
-							echo "<tr class='success'>";
+						echo "<tr class='success'>";
 							$unit_id = $row['id'];
 							echo "<td>" . $row['id'] . "</td>";
 
@@ -535,106 +542,121 @@ include("php/header.php");
 							$current_bool_5 = $row['RECEIVED_BOOL5'];
 
 							if ($current_bool_1 == 1) {
-								$inv_current_bool_1 = 0;
-								$text_current_bool_1 = "ON";
-								$color_current_bool_1 = "#6ed829";
+							$inv_current_bool_1 = 0;
+							$text_current_bool_1 = "ON";
+							$color_current_bool_1 = "#6ed829";
 							} else {
-								$inv_current_bool_1 = 1;
-								$text_current_bool_1 = "OFF";
-								$color_current_bool_1 = "#e04141";
+							$inv_current_bool_1 = 1;
+							$text_current_bool_1 = "OFF";
+							$color_current_bool_1 = "#e04141";
 							}
 
 
 							if ($current_bool_2 == 1) {
-								$inv_current_bool_2 = 0;
-								$text_current_bool_2 = "ON";
-								$color_current_bool_2 = "#6ed829";
+							$inv_current_bool_2 = 0;
+							$text_current_bool_2 = "ON";
+							$color_current_bool_2 = "#6ed829";
 							} else {
-								$inv_current_bool_2 = 1;
-								$text_current_bool_2 = "OFF";
-								$color_current_bool_2 = "#e04141";
+							$inv_current_bool_2 = 1;
+							$text_current_bool_2 = "OFF";
+							$color_current_bool_2 = "#e04141";
 							}
 
 
 							if ($current_bool_3 == 1) {
-								$inv_current_bool_3 = 0;
-								$text_current_bool_3 = "ON";
-								$color_current_bool_3 = "#6ed829";
+							$inv_current_bool_3 = 0;
+							$text_current_bool_3 = "ON";
+							$color_current_bool_3 = "#6ed829";
 							} else {
-								$inv_current_bool_3 = 1;
-								$text_current_bool_3 = "OFF";
-								$color_current_bool_3 = "#e04141";
+							$inv_current_bool_3 = 1;
+							$text_current_bool_3 = "OFF";
+							$color_current_bool_3 = "#e04141";
 							}
 
 
 							if ($current_bool_4 == 1) {
-								$inv_current_bool_4 = 0;
-								$text_current_bool_4 = "ON";
-								$color_current_bool_4 = "#6ed829";
+							$inv_current_bool_4 = 0;
+							$text_current_bool_4 = "ON";
+							$color_current_bool_4 = "#6ed829";
 							} else {
-								$inv_current_bool_4 = 1;
-								$text_current_bool_4 = "OFF";
-								$color_current_bool_4 = "#e04141";
+							$inv_current_bool_4 = 1;
+							$text_current_bool_4 = "OFF";
+							$color_current_bool_4 = "#e04141";
 							}
 
 
 							if ($current_bool_5 == 1) {
-								$inv_current_bool_5 = 0;
-								$text_current_bool_5 = "ON";
-								$color_current_bool_5 = "#6ed829";
+							$inv_current_bool_5 = 0;
+							$text_current_bool_5 = "ON";
+							$color_current_bool_5 = "#6ed829";
 							} else {
-								$inv_current_bool_5 = 1;
-								$text_current_bool_5 = "OFF";
-								$color_current_bool_5 = "#e04141";
+							$inv_current_bool_5 = 1;
+							$text_current_bool_5 = "OFF";
+							$color_current_bool_5 = "#e04141";
 							}
 
 
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='hidden' name='value2' value=$current_bool_1   size='15' >	
-	<input type='hidden' name='value' value=$inv_current_bool_1  size='15' >	
-  	<input type='hidden' name='unit' value=$unit_id >
-  	<input type='hidden' name='column' value=$column1 >
-  	<input type= 'submit' name= 'change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_1' value=$text_current_bool_1></form></td>";
+							echo "<td>
+								<form action=update_values.php method='post'>
+									<input type='hidden' name='value2' value=$current_bool_1 size='15'>
+									<input type='hidden' name='value' value=$inv_current_bool_1 size='15'>
+									<input type='hidden' name='unit' value=$unit_id>
+									<input type='hidden' name='column' value=$column1>
+									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_1' value=$text_current_bool_1>
+								</form>
+							</td>";
 
 
 
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='hidden' name='value2' value=$current_bool_2   size='15' >	
-	<input type='hidden' name='value' value=$inv_current_bool_2  size='15' >	
-  	<input type='hidden' name='unit' value=$unit_id >
-  	<input type='hidden' name='column' value=$column2 >
-  	<input type= 'submit' name= 'change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_2' value=$text_current_bool_2></form></td>";
+							echo "<td>
+								<form action=update_values.php method='post'>
+									<input type='hidden' name='value2' value=$current_bool_2 size='15'>
+									<input type='hidden' name='value' value=$inv_current_bool_2 size='15'>
+									<input type='hidden' name='unit' value=$unit_id>
+									<input type='hidden' name='column' value=$column2>
+									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_2' value=$text_current_bool_2>
+								</form>
+							</td>";
 
 
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='hidden' name='value2' value=$current_bool_3   size='15' >	
-	<input type='hidden' name='value' value=$inv_current_bool_3  size='15' >	
-  	<input type='hidden' name='unit' value=$unit_id >
-  	<input type='hidden' name='column' value=$column3 >
-  	<input type= 'submit' name= 'change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_3' value=$text_current_bool_3></form></td>";
+							echo "<td>
+								<form action=update_values.php method='post'>
+									<input type='hidden' name='value2' value=$current_bool_3 size='15'>
+									<input type='hidden' name='value' value=$inv_current_bool_3 size='15'>
+									<input type='hidden' name='unit' value=$unit_id>
+									<input type='hidden' name='column' value=$column3>
+									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_3' value=$text_current_bool_3>
+								</form>
+							</td>";
 
 
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='hidden' name='value2' value=$current_bool_4   size='15' >	
-	<input type='hidden' name='value' value=$inv_current_bool_4  size='15' >	
-  	<input type='hidden' name='unit' value=$unit_id >
-  	<input type='hidden' name='column' value=$column4 >
-  	<input type= 'submit' name= 'change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_4' value=$text_current_bool_4></form></td>";
+							echo "<td>
+								<form action=update_values.php method='post'>
+									<input type='hidden' name='value2' value=$current_bool_4 size='15'>
+									<input type='hidden' name='value' value=$inv_current_bool_4 size='15'>
+									<input type='hidden' name='unit' value=$unit_id>
+									<input type='hidden' name='column' value=$column4>
+									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_4' value=$text_current_bool_4>
+								</form>
+							</td>";
 
 
-							echo "<td><form action= update_values.php method= 'post'>
-  	<input type='hidden' name='value2' value=$current_bool_5   size='15' >	
-	<input type='hidden' name='value' value=$inv_current_bool_5  size='15' >	
-  	<input type='hidden' name='unit' value=$unit_id >
-  	<input type='hidden' name='column' value=$column5 >
-  	<input type= 'submit' name= 'change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_5' value=$text_current_bool_5></form></td>";
+							echo "<td>
+								<form action=update_values.php method='post'>
+									<input type='hidden' name='value2' value=$current_bool_5 size='15'>
+									<input type='hidden' name='value' value=$inv_current_bool_5 size='15'>
+									<input type='hidden' name='unit' value=$unit_id>
+									<input type='hidden' name='column' value=$column5>
+									<input type='submit' name='change_but' style=' margin-left: 25%; margin-top: 10%; font-size: 30px; text-align:center; background-color: $color_current_bool_5' value=$text_current_bool_5>
+								</form>
+							</td>";
 
 							echo "</tr>
-	  </tbody>";
+						</tbody>";
 						}
 						echo "</table>
-<br>
-";
+						<br>
+						";
 						?>
 
 
