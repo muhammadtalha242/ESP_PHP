@@ -124,19 +124,34 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
         $('#sensordropdown1').change(function() {
             //Selected value
             var inputValue = $(this).val();
-
-            //Ajax for calling php function
+            var ESPid = <?php echo $_GET['id'] ?>;
             $.post('./php/sensor_fill.php', {
-                dropdownValue: inputValue
+                dropdownValue: inputValue,
+                espID: ESPid
             }, function(data) {
                 var s = String(data);
                 var S = s.split('-');
                 document.getElementById("type").innerHTML = S[0];
                 document.getElementById("p_r").innerHTML = S[1];
                 document.getElementById("iomode").innerHTML = S[2];
-                //alert('ajax completed. Response:  ' + S[0] + ", " + S[1] + ", " + S[2] + ".");
-                //do after submission operation in DOM
+                s = "";
+                for (var i = 3; i < S.length; i++) {
+                    temp = S[i];
+                    temp2 = S[++i];
+                    s += "<option value=" + temp2 + ">" + temp + "</option>";
+                }
+                document.getElementById("sensordropdown2").innerHTML = s;
+                if (S[0] == "Communication") {
+                    document.getElementById("sensordropdown2").setAttribute("Disabled", "");
+                    document.getElementById("sensordropdown2").innerHTML =
+                        "<option value=-1>" + "TX & RX" + "</option>";
+                }
             });
+        });
+    });
+    $(document).ready(function() {
+        $('#sensoradd').click(function() {
+            alert("hi");
         });
     });
     </script>
@@ -166,7 +181,6 @@ include("php/header.php");
         <?php
 		if (isset($_GET['action']) && @$_GET['action'] == "add" || @$_GET['action'] == "edit") {
 		?>
-
         <script type="text/javascript" src="js/validation/jquery.validate.min.js"></script>
         <div class="row">
             <div class="col-sm-10 col-sm-offset-1">
@@ -207,28 +221,30 @@ include("php/header.php");
                                     </div>
                                 </div>
                             </fieldset>
-                            <form action="student.php" method="post" id="signupForm1" class="form-horizontal">
-                                <div class="panel-body">
-                                    <fieldset class="scheduler-border">
-                                        <legend class="scheduler-border">Add Devices:</legend>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label" for="Old">Select Sensor</label>
-                                            <div class="col-sm-3">
-                                                <select class="form-control" name=”sensors” id="sensordropdown1">
-                                                    <?php
+                    </form>
+                    <form action="student.php" method="post" id="signupForm1" class="form-horizontal">
+                        <div class="panel-body">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border">Add Devices:</legend>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="Old">Sensor</label>
+                                    <div class="col-sm-3">
+                                        <select class="form-control" name=”sensors” id="sensordropdown1">
+                                            <option value='-1'>Select Sensor</option>
+                                            <?php
 											$sql = "SELECT * FROM `sensors` WHERE delete_status = 0";
 											$result = mysqli_query($conn,$sql);
 											$i = 0;
 											$type1 = '';
 											$type2 = '';
 											$type3 = '';
-											$type4 = '';											
+											$type4 = '';								
 											while($row=mysqli_fetch_assoc($result)) {
 											?>
-                                                    <option value='<?php echo $row['ID'];?>'>
-                                                        <?php echo $row['name'];?>
-                                                    </option>
-                                                    <?php
+                                            <option value='<?php echo $row['ID'];?>'>
+                                                <?php echo $row['name'];?>
+                                            </option>
+                                            <?php
 													if($i==0){
 														echo $type1 = $row['type'];
 														echo $t1 = ($type1==0) ? 'Analog' : (($type1==1) ? 'Digital' : 'Communication');
@@ -237,76 +253,72 @@ include("php/header.php");
 													    echo $t3 = ($type3==0) ? 'Output' : (($type3==1) ? 'Input' : 'I/O');	
 													}
 													?>
-                                                    <?php $i +=1; } ?>
-                                                </select>
-                                            </div>
-                                            <label class="col-sm-2 control-label" for="Old">Add Label</label>
-                                            <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="label" name="label"
-                                                    value="<?= $labelenter; ?>" />
-                                            </div>
-                                            <label class="col-sm-1 control-label" for="Old">Pin</label>
-                                            <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="pin" name="pin"
-                                                    value="<?= $pinselect; ?>" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label" for="Old">Type</label>
-                                            <div class="col-sm-3">
-                                                <div class="form-control" id="type" name="type"
-                                                    <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
-                                                    <?= $t1; ?>
-                                                </div>
-                                            </div>
-                                            <label class="col-sm-2 control-label" for="Old">Pins Required</label>
-                                            <div class="col-sm-1">
-                                                <div class="form-control" id="p_r" name="p_r"
-                                                    <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
-                                                    <?= $type2; ?>
-                                                </div>
-                                            </div>
-                                            <label class="col-sm-2 control-label" for="Old">I/O Mode</label>
-                                            <div class="col-sm-2">
-                                                <div class="form-control" id="iomode" name="iomode"
-                                                    <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
-                                                    <?= $t3; ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-8 col-sm-offset-2"
-                                                style="display: -ms-flexbox!important; display:flex!important; -ms-flex-pack:center!important; justify-content:center!important;">
-                                                <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                                <input type="hidden" name="action" value="<?php echo $action; ?>">
-                                                <button type="submit" name="save" class="btn btn-primary">Add</button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
+                                            <?php $i +=1; } ?>
+                                        </select>
+                                    </div>
+                                    <label class="col-sm-2 control-label" for="Old">Add Label</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control" id="label" name="label"
+                                            value="<?= $labelenter; ?>" />
+                                    </div>
+                                    <label class="col-sm-1 control-label" for="Old">Pin</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-control" name="pins" id="sensordropdown2">
+                                            <option value='-1'>Select Pin</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </form>
-                            <link href="css/datatable/datatable.css" rel="stylesheet" />
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Manage Sensors
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="Old">Type</label>
+                                    <div class="col-sm-3">
+                                        <div class="form-control" id="type" name="type"
+                                            <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
+                                            <?= $t1; ?>
+                                        </div>
+                                    </div>
+                                    <label class="col-sm-2 control-label" for="Old">Pins Required</label>
+                                    <div class="col-sm-1">
+                                        <div class="form-control" id="p_r" name="p_r"
+                                            <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
+                                            <?= $type2; ?>
+                                        </div>
+                                    </div>
+                                    <label class="col-sm-2 control-label" for="Old">I/O Mode</label>
+                                    <div class="col-sm-2">
+                                        <div class="form-control" id="iomode" name="iomode"
+                                            <?php echo ($action == "update") ? "Disabled" : (($action == "add") ? "Disabled" : ""); ?>>
+                                            <?= $t3; ?>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="panel-body">
-                                    <div class="table-sorting table-responsive">
-                                        <table class="table table-striped table-bordered table-hover" id="tSortable22">
-                                            <thead>
-                                                <tr>
-                                                    <th>Sr No.</th>
-                                                    <th>Sensor Name</th>
-                                                    <th>Sensor Label</th>
-                                                    <th>Type</th>
-                                                    <th>I/O Mode</th>
-                                                    <th>Connected</th>
-                                                    <th>Through Pin</th>
-                                                    <th>Value</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
+                                <div class="form-group">
+                                    <div class="col-sm-8 col-sm-offset-2"
+                                        style="display: -ms-flexbox!important; display:flex!important; -ms-flex-pack:center!important; justify-content:center!important;">
+                                        <div class="btn btn-primary" id="sensoradd">Add</div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </form>
+                    <link href="css/datatable/datatable.css" rel="stylesheet" />
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Manage Sensors
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-sorting table-responsive">
+                                <table class="table table-striped table-bordered table-hover" id="tSortable22">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr No.</th>
+                                            <th>Sensor Name</th>
+                                            <th>Sensor Label</th>
+                                            <th>Type</th>
+                                            <th>I/O Mode</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
 									if(isset($_GET['action']) && @$_GET['action'] == "edit"){
 									$sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
 									$q = $conn->query($sql);
@@ -322,108 +334,105 @@ include("php/header.php");
 											<td>'.$r['label'].'</td>
 											<td>'.$temp2.'</td>
 											<td>'.$temp3.'</td>
-											<td>'.$r['connected'].'</td>
-											<td>'.$r['pin'].'</td>
-											<td>'.$r['value'].'</td>
                                         </tr>';
 										$i++;
 									}
 								}
 									?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
-                            <script src="js/dataTable/jquery.dataTables.min.js"></script>
-                            <script>
-                            $(document).ready(function() {
-                                $('#tSortable22').dataTable({
-                                    "bPaginate": true,
-                                    "bLengthChange": true,
-                                    "bFilter": true,
-                                    "bInfo": false,
-                                    "bAutoWidth": true
-                                });
-
-                            });
-                            </script>
                         </div>
-                    </form>
-                </div>
-            </div>
-            <script type="text/javascript">
-            $(document).ready(function() {
-                if ($("#signupForm1").length > 0) {
-                    $("#signupForm1").validate({
-                        rules: {
-                            esp_name: "required",
-                        },
-                        errorElement: "em",
-                        errorPlacement: function(error, element) {
-                            // Add the `help-block` class to the error element
-                            error.addClass("help-block");
+                    </div>
+                    <script src="js/dataTable/jquery.dataTables.min.js"></script>
+                    <script>
+                    $(document).ready(function() {
+                        $('#tSortable22').dataTable({
+                            "bPaginate": true,
+                            "bLengthChange": true,
+                            "bFilter": true,
+                            "bInfo": false,
+                            "bAutoWidth": true
+                        });
 
-                            // Add `has-feedback` class to the parent div.form-group
-                            // in order to add icons to inputs
-                            element.parents(".col-sm-10").addClass("has-feedback");
-
-                            if (element.prop("type") === "checkbox") {
-                                error.insertAfter(element.parent("label"));
-                            } else {
-                                error.insertAfter(element);
-                            }
-
-                            // Add the span element, if doesn't exists, and apply the icon classes to it.
-                            if (!element.next("span")[0]) {
-                                $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>")
-                                    .insertAfter(element);
-                            }
-                        },
-                        success: function(label, element) {
-                            // Add the span element, if doesn't exists, and apply the icon classes to it.
-                            if (!$(element).next("span")[0]) {
-                                $("<span class='glyphicon glyphicon-ok form-control-feedback'></span>")
-                                    .insertAfter($(element));
-                            }
-                        },
-                        highlight: function(element, errorClass, validClass) {
-                            $(element).parents(".col-sm-10").addClass("has-error")
-                                .removeClass("has-success");
-                            $(element).next("span").addClass("glyphicon-remove")
-                                .removeClass("glyphicon-ok");
-                        },
-                        unhighlight: function(element, errorClass, validClass) {
-                            $(element).parents(".col-sm-10").addClass("has-success")
-                                .removeClass("has-error");
-                            $(element).next("span").addClass("glyphicon-ok").removeClass(
-                                "glyphicon-remove");
-                        }
                     });
-                }
-            });
-            </script>
-
-
-            <!--Manage ESP change.-->
-            <?php } else if (@$_GET['action'] != "view") {?>
-            <link href="css/datatable/datatable.css" rel="stylesheet" />
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Manage ESP
+                    </script>
                 </div>
-                <div class="panel-body">
-                    <div class="table-sorting table-responsive">
-                        <table class="table table-striped table-bordered table-hover" id="tSortable22">
-                            <thead>
-                                <tr>
-                                    <th>Sr No.</th>
-                                    <th>Name</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            if ($("#signupForm1").length > 0) {
+                $("#signupForm1").validate({
+                    rules: {
+                        esp_name: "required",
+                    },
+                    errorElement: "em",
+                    errorPlacement: function(error, element) {
+                        // Add the `help-block` class to the error element
+                        error.addClass("help-block");
+
+                        // Add `has-feedback` class to the parent div.form-group
+                        // in order to add icons to inputs
+                        element.parents(".col-sm-10").addClass("has-feedback");
+
+                        if (element.prop("type") === "checkbox") {
+                            error.insertAfter(element.parent("label"));
+                        } else {
+                            error.insertAfter(element);
+                        }
+
+                        // Add the span element, if doesn't exists, and apply the icon classes to it.
+                        if (!element.next("span")[0]) {
+                            $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>")
+                                .insertAfter(element);
+                        }
+                    },
+                    success: function(label, element) {
+                        // Add the span element, if doesn't exists, and apply the icon classes to it.
+                        if (!$(element).next("span")[0]) {
+                            $("<span class='glyphicon glyphicon-ok form-control-feedback'></span>")
+                                .insertAfter($(element));
+                        }
+                    },
+                    highlight: function(element, errorClass, validClass) {
+                        $(element).parents(".col-sm-10").addClass("has-error")
+                            .removeClass("has-success");
+                        $(element).next("span").addClass("glyphicon-remove")
+                            .removeClass("glyphicon-ok");
+                    },
+                    unhighlight: function(element, errorClass, validClass) {
+                        $(element).parents(".col-sm-10").addClass("has-success")
+                            .removeClass("has-error");
+                        $(element).next("span").addClass("glyphicon-ok").removeClass(
+                            "glyphicon-remove");
+                    }
+                });
+            }
+        });
+        </script>
+
+
+        <!--Manage ESP change.-->
+        <?php } else if (@$_GET['action'] != "view") {?>
+        <link href="css/datatable/datatable.css" rel="stylesheet" />
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Manage ESP
+            </div>
+            <div class="panel-body">
+                <div class="table-sorting table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="tSortable22">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
 									$sql = "select * from esp32 where delete_status='0'";
 									$q = $conn->query($sql);
 									$i = 1;
@@ -442,34 +451,34 @@ include("php/header.php");
 										$i++;
 									}
 									?>
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <script src="js/dataTable/jquery.dataTables.min.js"></script>
-            <script>
-            $(document).ready(function() {
-                $('#tSortable22').dataTable({
-                    "bPaginate": true,
-                    "bLengthChange": true,
-                    "bFilter": true,
-                    "bInfo": false,
-                    "bAutoWidth": true
-                });
-
+        </div>
+        <script src="js/dataTable/jquery.dataTables.min.js"></script>
+        <script>
+        $(document).ready(function() {
+            $('#tSortable22').dataTable({
+                "bPaginate": true,
+                "bLengthChange": true,
+                "bFilter": true,
+                "bInfo": false,
+                "bAutoWidth": true
             });
-            </script>
-            <?php } ?>
 
-            <!--view action change-->
-            <?php if (isset($_GET['action']) && @$_GET['action'] == "view") { ?>
-            <script type="text/javascript" src="js/validation/jquery.validate.min.js"></script>
-            <div class="row">
-                <div class="col-sm-10 col-sm-offset-1">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <?php
+        });
+        </script>
+        <?php } ?>
+
+        <!--view action change-->
+        <?php if (isset($_GET['action']) && @$_GET['action'] == "view") { ?>
+        <script type="text/javascript" src="js/validation/jquery.validate.min.js"></script>
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <?php
 								$con = mysqli_connect("localhost", "root", "", "egnion_yomi");
 								if (mysqli_connect_errno()) {
 									echo "Failed to connect to MySQL: " . mysqli_connect_error();
@@ -480,8 +489,8 @@ include("php/header.php");
 									$name = $row['esp_name'];
 									echo ("ESP: $name, ID: $id");
 								} ?>
-                        </div>
-                        <?php //We include the database_connect.php which has the data for the connection to the database
+                    </div>
+                    <?php //We include the database_connect.php which has the data for the connection to the database
 
 							$con = mysqli_connect("localhost", "root", "", "dbs122647");
 							// Check the connection
@@ -638,9 +647,9 @@ include("php/header.php");
 
 
 
-                        //Again for the second table for numeric controls. We create the table with all the values from
-                        the database
-                        <?php
+                    //Again for the second table for numeric controls. We create the table with all the values from
+                    the database
+                    <?php
 
 							$con = mysqli_connect("localhost", "root", "", "dbs122647");
 							if (mysqli_connect_errno()) {
@@ -727,9 +736,9 @@ include("php/header.php");
 
 
 
-                        //Again for the third table for text send. We create the table with all the values from the
-                        database
-                        <?php
+                    //Again for the third table for text send. We create the table with all the values from the
+                    database
+                    <?php
 
 							$con = mysqli_connect("localhost", "root", "", "dbs122647");
 
@@ -776,25 +785,8 @@ include("php/header.php");
 <hr>";
 
 							?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        //Again for the forth table.
-                        <?php
+                    //Again for the forth table.
+                    <?php
 							$con = mysqli_connect("localhost", "root", "", "dbs122647");
 
 							if (mysqli_connect_errno()) {
@@ -877,17 +869,8 @@ include("php/header.php");
 							}
 							echo "</table>";
 							?>
-
-
-
-
-
-
-
-
-
-                        //Again for the fifth table.
-                        <?php
+                    //Again for the fifth table.
+                    <?php
 
 							$con = mysqli_connect("localhost", "root", "", "dbs122647");
 
@@ -931,31 +914,31 @@ include("php/header.php");
 <br>
 ";
 							?>
-                        <?php } ?>
+                    <?php } ?>
 
 
-                    </div>
-                    <!-- /. PAGE INNER  -->
                 </div>
-                <!-- /. PAGE WRAPPER  -->
+                <!-- /. PAGE INNER  -->
             </div>
-            <!-- /. WRAPPER  -->
+            <!-- /. PAGE WRAPPER  -->
+        </div>
+        <!-- /. WRAPPER  -->
+        <!--
+        <div id="footer-sec">
+            School Fees Payment System | Brought To You By : <a href="http://code-projects.org/"
+                target="_blank">Code-Projects</a>
+        </div>
+-->
 
-            <div id="footer-sec">
-                School Fees Payment System | Brought To You By : <a href="http://code-projects.org/"
-                    target="_blank">Code-Projects</a>
-            </div>
-
-
-            <!-- BOOTSTRAP SCRIPTS -->
-            <script src="js/bootstrap.js"></script>
-            <!-- METISMENU SCRIPTS -->
-            <script src="js/jquery.metisMenu.js"></script>
-            <!-- CUSTOM SCRIPTS -->
-            <script src="js/custom1.js"></script>
+        <!-- BOOTSTRAP SCRIPTS -->
+        <script src="js/bootstrap.js"></script>
+        <!-- METISMENU SCRIPTS -->
+        <script src="js/jquery.metisMenu.js"></script>
+        <!-- CUSTOM SCRIPTS -->
+        <script src="js/custom1.js"></script>
 
 
 
-            </body>
+        </body>
 
 </html>
