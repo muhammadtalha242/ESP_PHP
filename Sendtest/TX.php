@@ -18,103 +18,103 @@ http://localhost/IOTFRIDGE/Sendtest/TX.php?esp=1&s1=1&s2=1&s3=1&s4=1&s5=1&s6=1&s
 
 */
 //We loop through and grab variables from the received the URL
-// foreach ($_REQUEST as $key => $value)  //Save the received value to the hey variable. Save each cahracter after the "&"
-// {
-// 	//Now we detect if we recheive the id, the password, unit, or a value to update
-// 	if ($key == "esp") {
+foreach ($_REQUEST as $key => $value)  //Save the received value to the hey variable. Save each cahracter after the "&"
+{
+	//Now we detect if we recheive the id, the password, unit, or a value to update
+	if ($key == "esp") {
 
-// 		$esp = $value;
-// 		echo $esp;
-// 	}
+		$esp = $value;
+		echo $esp;
+	}
 
-// 	if ($key == "s1") {
-// 		$sensor1 = $value;
+	if ($key == "s1") {
+		$sensor1 = $value;
 
-// 		// echo 'INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','1', now(), $sensor1)';
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','1', now(), $sensor1)");
+		// echo 'INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','1', now(), $sensor1)';
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','1', now(), $sensor1)");
 
-// 		echo "sensor1 esp1 updated";
-// 	}
-// 	if ($key == "s2") {
-// 		$sensor2 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','2', now(), $sensor2)");
+		echo "sensor1 esp1 updated";
+	}
+	if ($key == "s2") {
+		$sensor2 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','2', now(), $sensor2)");
 
-// 		echo $sensor2;
-// 	}
-// 	if ($key == "s3") {
-// 		$sensor3 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','3', now(), $sensor3)");
+		echo $sensor2;
+	}
+	if ($key == "s3") {
+		$sensor3 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','3', now(), $sensor3)");
 
-// 		echo $sensor3;
-// 	}
+		echo $sensor3;
+	}
 
-// 	if ($key == "s4") {
-// 		$sensor4 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','4', now(), $sensor4)");
+	if ($key == "s4") {
+		$sensor4 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','4', now(), $sensor4)");
 
-// 		echo $sensor4;
-// 	}
-// 	if ($key == "s5") {
-// 		$sensor5 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','5', now(), $sensor5)");
+		echo $sensor4;
+	}
+	if ($key == "s5") {
+		$sensor5 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','5', now(), $sensor5)");
 
-// 		echo $sensor5;
-// 	}
-// 	if ($key == "s6") {
-// 		$sensor6 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','6', now(), $sensor6)");
-// 	}
-// 	if ($key == "s7") {
-// 		$sensor7 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','7', now(), $sensor7)");
-// 	}
-// 	if ($key == "s8") {
-// 		$sensor8 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','8', now(), $sensor8)");
-// 	}
-// 	if ($key == "s9") {
-// 		$sensor9 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','9', now(), $sensor9)");
-// 	}
-// 	if ($key == "s10") {
-// 		$sensor10 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','10', now(), $sensor10)");
-// 	}
-// 	if ($key == "s11") {
-// 		$sensor11 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','11', now(), $sensor11)");
-// 	}
-// 	if ($key == "s12") {
-// 		$sensor12 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','12', now(), $sensor12)");
-// 	}
-// 	if ($key == "s13") {
-// 		$sensor13 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','13', now(), $sensor13)");
-// 	}
-// 	if ($key == "s14") {
-// 		$sensor14 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','14', now(), $sensor14)");
-// 	}
-// 	if ($key == "s15") {
-// 		$sensor15 = $value;
+		echo $sensor5;
+	}
+	if ($key == "s6") {
+		$sensor6 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','6', now(), $sensor6)");
+	}
+	if ($key == "s7") {
+		$sensor7 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','7', now(), $sensor7)");
+	}
+	if ($key == "s8") {
+		$sensor8 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','8', now(), $sensor8)");
+	}
+	if ($key == "s9") {
+		$sensor9 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','9', now(), $sensor9)");
+	}
+	if ($key == "s10") {
+		$sensor10 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','10', now(), $sensor10)");
+	}
+	if ($key == "s11") {
+		$sensor11 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','11', now(), $sensor11)");
+	}
+	if ($key == "s12") {
+		$sensor12 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','12', now(), $sensor12)");
+	}
+	if ($key == "s13") {
+		$sensor13 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','13', now(), $sensor13)");
+	}
+	if ($key == "s14") {
+		$sensor14 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','14', now(), $sensor14)");
+	}
+	if ($key == "s15") {
+		$sensor15 = $value;
 
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','15', now(), $sensor15)");
-// 	}
-// 	if ($key == "s18") {
-// 		$sensor16 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','15', now(), $sensor15)");
+	}
+	if ($key == "s18") {
+		$sensor16 = $value;
 
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','16', now(), $sensor16)");
-// 	}
-// 	if ($key == "s17") {
-// 		$sensor17 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','17', now(), $sensor17)");
-// 	}
-// 	if ($key == "s18") {
-// 		$sensor18 = $value;
-// 		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','18', now(), $sensor18)");
-// 	}
-// } //End of foreach
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','16', now(), $sensor16)");
+	}
+	if ($key == "s17") {
+		$sensor17 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','17', now(), $sensor17)");
+	}
+	if ($key == "s18") {
+		$sensor18 = $value;
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','18', now(), $sensor18)");
+	}
+} //End of foreach
 
 
 // include("database_connect.php"); 	//We include the database_connect.php which has the data for the connection to the database
