@@ -7,6 +7,10 @@ include("php/checklogin.php");
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
+    <style>
+
+
+    </style>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Egnion Yomi</title>
@@ -79,9 +83,6 @@ include("php/header.php");
 <script src="js/jquery.metisMenu.js"></script>
 <!-- CUSTOM SCRIPTS -->
 <script src="js/custom1.js"></script>
-
-
-
 </body>
 
 </html>

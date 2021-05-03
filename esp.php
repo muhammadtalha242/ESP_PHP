@@ -237,7 +237,7 @@ include("php/header.php");
     <div id="page-inner">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="page-head-line">ESP_NODE
+                <h1 class="page-head-line">ESP NODE
                     <?php
 					echo (isset($_GET['action']) && @$_GET['action'] == "add" || @$_GET['action'] == "edit" || @$_GET['action'] == "view") ?
 						' <a href="esp.php" class="btn btn-primary btn-sm pull-right">Back <i class="glyphicon glyphicon-arrow-right"></i></a>' : '<a href="esp.php?action=add" class="btn btn-primary btn-sm pull-right"><i class="glyphicon glyphicon-plus"></i> Add </a>';

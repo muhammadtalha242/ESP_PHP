@@ -8,7 +8,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.php">egnion_yomi</a>
+                <a class="navbar-brand" href="index.php">Egnion Yomi</a>
             </div>
 
         </nav>
@@ -35,7 +35,7 @@
                     </li>
 
                     <li>
-                        <a href="esp.php"><i class="fa fa-users "></i>ESP_Node</a>
+                        <a href="esp.php"><i class="fa fa-users "></i>ESP Node</a>
                     </li>
 
                     <li>
