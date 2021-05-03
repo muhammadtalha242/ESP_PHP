@@ -199,43 +199,35 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 	</script>
 	<script>
 		$(document).ready(function() {
-			function test(event) {
-				console.log("Hereerree")
-				// $('.output_checkbox input[type=checkbox]').val();
-				console.log(event.target.attributes)
+			console.log("This")
+			$('input[type="checkbox"]').click(function() {
+				console.log("Checkbox is checked.");
 
-				console.log(event.target.attributes['pin_id'])
-				console.log(event)
-				let pin_id = event.target.attributes['pin_id'];
-				let pin_name = event.target.attributes['pin_name'];
-				let pin_number = event.target.attributes['pin_number'];
 
-				let label = event.target.attributes['label'];
-				let output = 0;
-				if ($('input.output_checkbox').is(':checked')) {
-					console.log("inside checked Value : " + output);
-					output = 1;
+				let p_name = $(this).data('pin_name');
+				let p_number = $(this).data('pin_number');
 
+				let lbl = $(this).data('label');
+				var ESPid = <?php echo $_GET['id'] ?>;
+				let out = 0;
+				if ($(this).is(":checked")) {
+					out = 1;
+
+
+				} else if ($(this).is(":not(:checked)")) {
+					out = 0;
 				}
-				console.log("outside checked Value : " + output);
-				$.post('./php/output_controls.php', {
-					pin_id: pin_id,
-					pin_name: pin_name,
-					pin_number: pin_number,
-					label: label,
-					output: output,
-					esp_id: '14'
-				}, function(data) {
-					console.log(data);
-					if (data == 0) {
-						alert("not updated")
-					} else {
-						alert("updated")
-					}
+				$.post("./php/output_controls.php", {
+					pin_name: p_name,
+					output: out,
+					esp_id: ESPid
+				}, function(data, status) {
+					alert("Data: " + data + "\nStatus: " + status);
 				});
-				output = 0;
+			});
 
-			}
+			out = 0;
+
 		});
 	</script>
 </head>
@@ -600,6 +592,7 @@ include("php/header.php");
 				</div>
 
 				<?php
+				$i = 0;
 				while ($r = $q->fetch_assoc()) {
 
 					$typ = $r['type'];
@@ -611,7 +604,8 @@ include("php/header.php");
 					$Connected_pin_name = $r['pin_name'];
 					$Connected_pin_id = $r['pin_id'];
 					$Connected_pin_number = $r['pin_number'];
-
+					print_r($i);
+					$i++;
 					if ($typ == 1) {
 						if ($iomode == 1) { ?>
 							<script>
@@ -622,43 +616,43 @@ include("php/header.php");
 							</script>
 						<?php } else { ?>
 							<script>
-								function test(event) {
-									console.log("Hereerree")
-									// $('.output_checkbox input[type=checkbox]').val();
-									console.log(event.target.attributes)
+								// function test(event) {
+								// 	console.log("Hereerree")
+								// 	// $('.output_checkbox input[type=checkbox]').val();
+								// 	console.log(event.target.attributes)
 
-									console.log(event.target.attributes['pin_id'])
-									console.log(event)
-									let pin_id = event.target.attributes['pin_id'];
-									let pin_name = event.target.attributes['pin_name'];
-									let pin_number = event.target.attributes['pin_number'];
+								// 	console.log(event.target.attributes['pin_id'])
+								// 	console.log(event)
+								// 	let pin_id = event.target.attributes['pin_id'];
+								// 	let pin_name = event.target.attributes['pin_name'];
+								// 	let pin_number = event.target.attributes['pin_number'];
 
-									let label = event.target.attributes['label'];
-									let output = 0;
-									if ($('input.output_checkbox').is(':checked')) {
-										console.log("inside checked Value : " + output);
-										output = 1;
+								// 	let label = event.target.attributes['label'];
+								// 	let output = 0;
+								// 	if ($('input.output_checkbox').is(':checked')) {
+								// 		console.log("inside checked Value : " + output);
+								// 		output = 1;
 
-									}
-									console.log("outside checked Value : " + output);
-									$.post('./php/output_controls.php', {
-										pin_id: pin_id,
-										pin_name: pin_name,
-										pin_number: pin_number,
-										label: label,
-										output: output,
-										esp_id: '14'
-									}, function(data) {
-										console.log(data);
-										if (data == 0) {
-											alert("not updated")
-										} else {
-											alert("updated")
-										}
-									});
-									output = 0;
+								// 	}
+								// 	console.log("outside checked Value : " + output);
+								// 	$.post('./php/output_controls.php', {
+								// 		pin_id: pin_id,
+								// 		pin_name: pin_name,
+								// 		pin_number: pin_number,
+								// 		label: label,
+								// 		output: output,
+								// 		esp_id: '14'
+								// 	}, function(data) {
+								// 		console.log(data);
+								// 		if (data == 0) {
+								// 			alert("not updated")
+								// 		} else {
+								// 			alert("updated")
+								// 		}
+								// 	});
+								// 	output = 0;
 
-								}
+								// } -->
 
 								var label = '<?php echo $SensorLabel; ?>'
 								var pin_name = '<?php echo $Connected_pin_name; ?>'
@@ -668,7 +662,7 @@ include("php/header.php");
 								$(`<div class="form-group">
 										<label class="col-sm-2 control-label" for="Old">${label} </label>
 										<div class="col-sm-10">
-										<label class='switch'><input class='output_checkbox' pin_name=${pin_name} pin_id=${pin_id} pin_number=${pin_number} label=${label} onClick='test(event)' type='checkbox' value='0'><span class='slider round'></span></label><span class='digital_output_span'></span>
+										<label class='switch'><input class='output_checkbox' data-pin_name=${pin_name} data-pin_id=${pin_id} data-pin_number=${pin_number} data-label=${label}   type='checkbox' value='0'><span class='slider round'></span></label><span class='digital_output_span'></span>
 											
 										</div>
 								</div>`).appendTo("#digital-output");
