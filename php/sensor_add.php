@@ -24,6 +24,53 @@
         if (mysqli_connect_errno()) {
             echo "Failed to connect to MySQL: " . mysqli_connect_error();
         }
+        if($sensor == 13){
+            $sql = "SELECT COUNT(ID) as countid FROM `used_pins` WHERE pin_id=19";
+            $i = 0;
+            $count = -1;
+            $K = $con->query($sql);
+            while ($Res = $K->fetch_assoc()) {        
+                if($i==0){
+                    $count = $Res['countid'];   
+                }
+            }
+            if($count <=0){
+                $sql1 = "INSERT INTO `connected_sensors`(`label`, `esp_id`, `sensor_id`) VALUES ('$label',$espID,$sensor)";
+                $sql2 = "SELECT ID FROM `connected_sensors` WHERE esp_id=$espID ORDER BY connected_sensors.ID DESC LIMIT 1";
+                $sql3 = "SELECT ID FROM `pins` WHERE pin_number = $pin";
+                
+                mysqli_query($con,$sql1);
+                $result2 = mysqli_fetch_assoc(mysqli_query($con,$sql2));
+                $result3 = mysqli_fetch_assoc(mysqli_query($con,$sql3));
+                $csid = $result2['ID'];
+                $pid = $result3['ID'];
+                $sql4 = "INSERT INTO `used_pins`(`connected_sersor_id`, `pin_id`) VALUES ($csid,$pid)";
+                mysqli_query($con, $sql4);		
+                $sql5 = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$espID ORDER BY connected_sensors.ID DESC LIMIT 1";
+                $sql1 = "SELECT COUNT(ID) as countid FROM `connected_sensors` WHERE esp_id=$espID";
+                $q = $con->query($sql5);
+                $Q = $con->query($sql1);
+                $i = 0;
+                $count = 0;
+                while ($R = $Q->fetch_assoc()) {        
+                    if($i==0){
+                        $count = $R['countid'];   
+                    }
+                }
+                while ($r = $q->fetch_assoc()) {
+                    if($i==0){
+                    $temp = $r['type'];
+                    $temp2 = ($temp == 0) ? 'Analog' : 'Digital';
+                    $temp = $r['iomode'];
+                    $temp3 = ($temp == 0) ? 'Output' : 'Input';
+                    echo $tablerow = '<tr ><td>' . $count . '</td><td>' . $r['name'] . '</td><td>' . $r['label'] . '</td><td>' . $temp2 . '</td><td>' . $temp3 . '</td></tr>';     
+                    }
+                    $i++;
+                }
+            } else{
+                echo 0;
+            }
+        } else{
         $sql1 = "INSERT INTO `connected_sensors`(`label`, `esp_id`, `sensor_id`) VALUES ('$label',$espID,$sensor)";
         $sql2 = "SELECT ID FROM `connected_sensors` WHERE esp_id=$espID ORDER BY connected_sensors.ID DESC LIMIT 1";
         $sql3 = "SELECT ID FROM `pins` WHERE pin_number = $pin";
@@ -42,7 +89,7 @@
         $count = 0;
         while ($R = $Q->fetch_assoc()) {        
             if($i==0){
-             echo $count = $R['countid'];   
+                $count = $R['countid'];   
             }
         }
         while ($r = $q->fetch_assoc()) {
@@ -55,5 +102,6 @@
             }
             $i++;
         }
+    }
     };
 ?>

@@ -126,12 +126,11 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
         $('#sensoradd').click(function() {
             let selectedValue1 = $("#sensordropdown1 option:selected").val();
             let selectedValue2 = $("#sensordropdown2 option:selected").val();
-            var tablerow;
             let selectedValue3 = document.getElementById("label").value;
-            console.log(selectedValue3);
-            if (selectedValue1 == "Select Sensor") {
+            let selectedValue4 = $("#sensordropdown2 option:selected").text();
+            if (selectedValue1 == "-1") {
                 alert("Kindly Select a Sensor.");
-            } else if (selectedValue2 == "Select Pin") {
+            } else if (selectedValue2 == "-1" && selectedValue4 != "TX & RX") {
                 alert("Kindly Select a pin.");
             } else if (selectedValue3 == "") {
                 alert("Kindly provide a label for the sensor")
@@ -144,12 +143,17 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
                     label: selectedValue3,
                     espID: ESPid
                 }, function(data) {
-                    tablerow = data;
+                    if (data == 0) {
+                        alert("Sensor not added pins already in use by another sensor.")
+                    } else {
+                        document.getElementById("tSortable2").innerHTML += data;
+                        alert("Sensor has been added to the Esp ID: " +
+                            <?php echo $_GET['id'] ?> + ".")
+                        document.getElementById("sensoradd").setAttribute("Disabled", "");
+                    }
                 });
-                alert("Sensor has been added to the Esp ID: " + <?php echo $_GET['id'] ?> + ".")
-            }
 
-            document.getElementById("tSortable2").innerHTML += tablerow;
+            }
         });
     });
     </script>
@@ -163,22 +167,31 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
                 dropdownValue: inputValue,
                 espID: ESPid
             }, function(data) {
-                var s = String(data);
-                var S = s.split('-');
-                document.getElementById("type").innerHTML = S[0];
-                document.getElementById("p_r").innerHTML = S[1];
-                document.getElementById("iomode").innerHTML = S[2];
-                s = "";
-                for (var i = 3; i < S.length; i++) {
-                    temp = S[i];
-                    temp2 = S[++i];
-                    s += "<option value=" + temp2 + ">" + temp + "</option>";
-                }
-                document.getElementById("sensordropdown2").innerHTML = s;
-                if (S[0] == "Communication") {
-                    document.getElementById("sensordropdown2").setAttribute("Disabled", "");
-                    document.getElementById("sensordropdown2").innerHTML =
-                        "<option value=-1>" + "TX & RX" + "</option>";
+                if (data != "") {
+                    var s = String(data);
+                    var S = s.split('-');
+                    document.getElementById("type").innerHTML = S[0];
+                    document.getElementById("p_r").innerHTML = S[1];
+                    document.getElementById("iomode").innerHTML = S[2];
+                    s = "";
+                    for (var i = 3; i < S.length; i++) {
+                        temp = S[i];
+                        temp2 = S[++i];
+                        s += "<option value=" + temp2 + ">" + temp + "</option>";
+                    }
+                    document.getElementById("sensordropdown2").removeAttribute("Disabled", "");
+                    document.getElementById("sensoradd").removeAttribute("Disabled", "");
+                    document.getElementById("sensordropdown2").innerHTML = s;
+                    if (S[0] == "Communication") {
+                        document.getElementById("sensordropdown2").setAttribute("Disabled", "");
+                        document.getElementById("sensordropdown2").innerHTML =
+                            "<option value=-1>" + "TX & RX" + "</option>";
+                        document.getElementById("sensoradd").removeAttribute("Disabled", "");
+                    }
+                } else {
+                    <?php echo $t1 = "" ?>
+                    <?php echo $t1 = "" ?>
+                    <?php echo $t3 = "" ?>
                 }
             });
         });
