@@ -428,6 +428,9 @@ include("php/header.php");
                                         <?php
 											if (isset($_GET['action']) && @$_GET['action'] == "edit") {
 												// $sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
+												// SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.ID INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=11
+												// SELECT * FROM `sensors_data` INNER JOIN `connected_sensors` ON sensors_data.connected_sersor_id=connected_sensors.ID INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID WHERE esp_id=11
+
 												$sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$id";
 												$q = $conn->query($sql);
 												$i = 1;
