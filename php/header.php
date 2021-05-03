@@ -35,11 +35,11 @@
                     </li>
 
                     <li>
-                        <a href="student.php"><i class="fa fa-users "></i>ESP_Node</a>
+                        <a href="esp.php"><i class="fa fa-users "></i>ESP_Node</a>
                     </li>
 
                     <li>
-                        <a href="branch.php"><i class="fa fa-cogs"></i>Sensors</a>
+                        <a href="sensors.php"><i class="fa fa-cogs"></i>Sensors</a>
                     </li>
 
                     <li>

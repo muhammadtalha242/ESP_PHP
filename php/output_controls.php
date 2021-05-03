@@ -1,29 +1,22 @@
-
 <?php
 // http://localhost/IOTFRIDGE/php/output_controls.php?&pin_id=12&pin_name=GPIO26&pin_number=26&label=26&output=1&esp_id=14
 
 $pin_name = 0;
-
 $output = 2;
 $esp_id = 0;
 
 foreach ($_REQUEST as $key => $value) {
-   
     if ($key == 'pin_name') {
         $pin_name = $value;
     }
-   
-
    
     if ($key == 'output') {
         $output = $value;
     }
     if ($key == 'esp_id') {
         $espId = $value;
-        updateDB($pin_name, $output, $espId);
-        
+        updateDB($pin_name, $output, $espId);   
     }
-    
     
 }
 
@@ -42,7 +35,7 @@ function updateDB( $pin_name, $output, $espId)
     $sql = "SELECT * FROM output_controls where esp_id=$espId";
     $q = $conn->query($sql);
 
-    echo 1;
+    
     //Loop through the table and filter out data for this unit id equal to the one taht we've received. 
     while ($row = $q->fetch_assoc()) {
         $output1 = $row['output1'];
@@ -51,10 +44,7 @@ function updateDB( $pin_name, $output, $espId)
         $output4 = $row['output4'];
         $output5 = $row['output5'];
         $output6 = $row['output6'];
-
-
-        echo "_output1$output1##_output2$output2##_output3$output3##_output4$output4##_output5$output5##_output6$output6";
+        //echo "_output1$output1##_output2$output2##_output3$output3##_output4$output4##_output5$output5##_output6$output6";
     } // End of the while loop
-
 }
 ?>

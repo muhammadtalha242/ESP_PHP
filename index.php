@@ -45,7 +45,7 @@ include("php/header.php");
 
             <div class=" col-md-4">
                 <div class="main-box mb-pink">
-                    <a href="student.php">
+                    <a href="esp.php">
                         <i class="fa fa-users fa-5x"></i>
                         <h5>ESP_Node</h5>
                     </a>
@@ -54,7 +54,7 @@ include("php/header.php");
 
             <div class="col-md-4">
                 <div class="main-box mb-red">
-                    <a href="branch.php">
+                    <a href="sensors.php">
                         <i class="fa fa-cogs fa-5x"></i>
                         <h5>Sensors</h5>
                     </a>

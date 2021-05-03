@@ -22,14 +22,14 @@ $iomode = mysqli_real_escape_string($conn,$_POST['iomode']);
 	// $res = $conn->query("SELECT Count ON ID FROM sensors");
   	$sql = $conn->query("INSERT INTO `sensors`( `name`, `type`, `pins_required`, `iomode`) VALUES ('$name','$type','$pincount','$iomode')");
     
-	  echo '<script type="text/javascript">window.location="branch.php?act=1";</script>';
+	  echo '<script type="text/javascript">window.location="sensors.php?act=1";</script>';
  
  }else
   if($_POST['action']=="update")
  {
     $id = mysqli_real_escape_string($conn,$_POST['id']);	
     $sql = $conn->query("UPDATE  `sensors`  SET  `name`  = '$name', `type`  = '$type', `pins_required`  = '$pincount', `iomode` = '$iomode' WHERE `ID` = '$id'");
-    echo '<script type="text/javascript">window.location="branch.php?act=2";</script>';
+    echo '<script type="text/javascript">window.location="sensors.php?act=2";</script>';
  }
 
 
@@ -42,7 +42,7 @@ $iomode = mysqli_real_escape_string($conn,$_POST['iomode']);
 if(isset($_GET['action']) && $_GET['action']=="delete"){
 
 $conn->query("UPDATE  sensors set delete_status = '1'  WHERE ID='".$_GET['id']."'");
-header("location: branch.php?act=3");
+header("location: sensors.php?act=3");
 
 }
 
@@ -116,7 +116,7 @@ include("php/header.php");
                 <h1 class="page-head-line">Sensors
                     <?php
 						echo (isset($_GET['action']) && @$_GET['action']=="add" || @$_GET['action']=="edit")?
-						' <a href="branch.php" class="btn btn-primary btn-sm pull-right">Back <i class="glyphicon glyphicon-arrow-right"></i></a>':'<a href="branch.php?action=add" class="btn btn-primary btn-sm pull-right"><i class="glyphicon glyphicon-plus"></i> Add </a>';
+						' <a href="sensors.php" class="btn btn-primary btn-sm pull-right">Back <i class="glyphicon glyphicon-arrow-right"></i></a>':'<a href="sensors.php?action=add" class="btn btn-primary btn-sm pull-right"><i class="glyphicon glyphicon-plus"></i> Add </a>';
 						?>
                 </h1>
 
@@ -142,7 +142,7 @@ echo $errormsg;
                     <div class="panel-heading">
                         <?php echo ($action=="add")? "Add Sensor": "Edit Sensor"; ?>
                     </div>
-                    <form action="branch.php" method="post" id="signupForm1" class="form-horizontal">
+                    <form action="sensors.php" method="post" id="signupForm1" class="form-horizontal">
                         <div class="panel-body">
 
                             <div class="form-group">
@@ -296,8 +296,8 @@ echo $errormsg;
                                             <td>'.$r['pins_required'].'</td>
 											<td>'.$temp3.'</td>
 											<td>
-											<a href="branch.php?action=edit&id='.$r['ID'].'" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-edit"></span></a>										
-											<a onclick="return confirm(\'Are you sure you want to delete this record\');" href="branch.php?action=delete&id='.$r['ID'].'" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+											<a href="sensors.php?action=edit&id='.$r['ID'].'" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-edit"></span></a>										
+											<a onclick="return confirm(\'Are you sure you want to delete this record\');" href="sensors.php?action=delete&id='.$r['ID'].'" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 											</tr>';
 										$i++;
 									}

@@ -79,6 +79,10 @@
         $result3 = mysqli_fetch_assoc(mysqli_query($con,$sql3));
         $csid = $result2['ID'];
         $pid = $result3['ID'];
+        if($pid >=7 && $pid <=12){
+            $sqllqs = "INSERT INTO `output_controls`(`esp_id`) VALUES ($espID)";
+            mysqli_query($con,$sqllqs);
+        }
         $sql4 = "INSERT INTO `used_pins`(`connected_sersor_id`, `pin_id`) VALUES ($csid,$pid)";
         mysqli_query($con, $sql4);		
         $sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$espID ORDER BY connected_sensors.ID DESC LIMIT 1";
