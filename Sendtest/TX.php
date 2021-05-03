@@ -135,7 +135,7 @@ while ($row = $q->fetch_assoc()) {
 	$output6= $row['output6'];
 
 	
-		echo " _esp_id$esp##_output1$output1##_output2$output2##_output3$output3##_output4$output4##_output5$output5##_output6$output6";
+		echo "_output1$output1##_output2$output2##_output3$output3##_output4$output4##_output5$output5##_output6$output6";
 
 	
 } // End of the while loop
