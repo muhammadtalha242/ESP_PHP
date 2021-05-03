@@ -18,7 +18,7 @@ include("php/dbconnect.php");
 include("php/checklogin.php");
 $errormsg = '';
 $action = "add";
-
+$tablerow ="";
 $id = "";
 $esp_name = '';
 $esp_id = 2;
@@ -123,6 +123,38 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
     <script type='text/javascript' src='js/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script>
     $(document).ready(function() {
+        $('#sensoradd').click(function() {
+            let selectedValue1 = $("#sensordropdown1 option:selected").val();
+            let selectedValue2 = $("#sensordropdown2 option:selected").val();
+            var tablerow;
+            let selectedValue3 = document.getElementById("label").value;
+            console.log(selectedValue3);
+            if (selectedValue1 == "Select Sensor") {
+                alert("Kindly Select a Sensor.");
+            } else if (selectedValue2 == "Select Pin") {
+                alert("Kindly Select a pin.");
+            } else if (selectedValue3 == "") {
+                alert("Kindly provide a label for the sensor")
+            } else {
+                var ESPid = <?php echo $_GET['id'] ?>;
+                var s = ESPid + " " + selectedValue1 + " " + selectedValue2 + " " + selectedValue3;
+                $.post('./php/sensor_add.php', {
+                    sensor: selectedValue1,
+                    pin: selectedValue2,
+                    label: selectedValue3,
+                    espID: ESPid
+                }, function(data) {
+                    tablerow = data;
+                });
+                alert("Sensor has been added to the Esp ID: " + <?php echo $_GET['id'] ?> + ".")
+            }
+
+            document.getElementById("tSortable2").innerHTML += tablerow;
+        });
+    });
+    </script>
+    <script>
+    $(document).ready(function() {
         $('#sensordropdown1').change(function() {
             //Selected value
             var inputValue = $(this).val();
@@ -149,58 +181,6 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
                         "<option value=-1>" + "TX & RX" + "</option>";
                 }
             });
-        });
-    });
-    $(document).ready(function() {
-        $('#sensoradd').click(function() {
-            if ($("#signupForm2").length > 0) {
-                $("#signupForm2").validate({
-                    rules: {
-                        label: "required"
-                    },
-                    errorElement: "em",
-                    errorPlacement: function(error, element) {
-                        // Add the `help-block` class to the error element
-                        error.addClass("help-block");
-
-                        element.parents(".col-sm-2").addClass("has-feedback");
-
-                        if (element.prop("type") === "checkbox") {
-                            error.insertAfter(element.parent("label"));
-                        } else {
-                            error.insertAfter(element);
-                        }
-
-                        // Add the span element, if doesn't exists, and apply the icon classes to it.
-                        if (!element.next("span")[0]) {
-                            $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>")
-                                .insertAfter(element);
-                        }
-                    },
-                    success: function(label, element) {
-                        // Add the span element, if doesn't exists, and apply the icon classes to it.
-                        if (!$(element).next("span")[0]) {
-                            $("<span class='glyphicon glyphicon-ok form-control-feedback'></span>")
-                                .insertAfter($(element));
-                        }
-                        alert("Hi");
-                    },
-                    highlight: function(element, errorClass, validClass) {
-                        $(element).parents(".col-sm-2").addClass("has-error")
-                            .removeClass("has-success");
-                        $(element).next("span").addClass("glyphicon-remove")
-                            .removeClass("glyphicon-ok");
-                    },
-                    unhighlight: function(element, errorClass, validClass) {
-                        $(element).parents(".col-sm-2").addClass("has-success")
-                            .removeClass("has-error");
-                        $(element).next("span").addClass("glyphicon-ok").removeClass(
-                            "glyphicon-remove");
-                    }
-                });
-
-            }
-
         });
     });
     </script>
@@ -414,7 +394,7 @@ include("php/header.php");
                         </div>
                         <div class="panel-body">
                             <div class="table-sorting table-responsive">
-                                <table class="table table-striped table-bordered table-hover" id="tSortable22">
+                                <table class="table table-striped table-bordered table-hover" id="tSortable2">
                                     <thead>
                                         <tr>
                                             <th>Sr No.</th>
