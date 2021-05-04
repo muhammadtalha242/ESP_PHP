@@ -121,6 +121,20 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script type='text/javascript' src='js/jquery/jquery-ui-1.10.1.custom.min.js'></script>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+        setTimeout(function() {
+            $.post('./php/get_digital_input.php', {
+                espID: <?php echo $_GET['id'] ?>
+            }, function(data) {
+                console.log("data is:" + data);
+                echo(data);
+            });
+        }, 2000);
+    });
+    </script>
+
     <script>
     $(document).ready(function() {
         $('#sensoradd').click(function() {
@@ -564,8 +578,16 @@ include("php/header.php");
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <?php
-						$id = @$_GET['id'];
-						echo ("ESP ID: $id");
+                            $con = mysqli_connect("localhost", "root", "", "egnion_yomi");
+                            if (mysqli_connect_errno()) {
+                                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+                            }
+                            $id = @$_GET['id'];
+                            $result = mysqli_query($con, "SELECT * FROM esp32 WHERE id=$id");
+                            while ($row = mysqli_fetch_array($result)) {
+                                $name = $row['esp_name'];
+                                echo ("$name, ID: $id");
+                            }
 						// $sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id WHERE esp_id=$id";
 						// $sql = "SELECT * FROM `sensors` INNER JOIN `connected_sensors` ON sensors.ID=connected_sensors.sensor_id INNER JOIN esp32 ON connected_sensors.esp_id = esp32.ID INNER JOIN sensors_data ON sensors.id=sensors_data.connected_sersor_id WHERE esp_id=$id";
 
@@ -605,6 +627,7 @@ include("php/header.php");
 
                     <?php
 				$i = 0;
+                $j = 0;
 				while ($r = $q->fetch_assoc()) {
 
 					$typ = $r['type'];
@@ -627,7 +650,7 @@ include("php/header.php");
                     <div class='col-sm-4'>
                         <div id='outer-div'>
                             <div id='inner-div' class='digital_input_div'>
-                                <button class='digital_input_btn' disabled style='padding-left:10px'></button>
+                                <button id='<?php echo ++$j; ?>' class='digital_input_btn' disabled style='padding-left:10px'></button>
                                 <span class='digital_input_span' style='text-align:center;'>${label}</span> 
                             </div>
                         </div>
