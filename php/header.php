@@ -8,7 +8,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.php">Egnion Yomi</a>
+                <a class="navbar-brand" href="index.php">Egnion Yomi ESP-MS</a>
             </div>
 
         </nav>

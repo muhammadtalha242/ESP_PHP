@@ -85,7 +85,7 @@ $errormsg = "<div class='alert alert-success'><strong>Success!</strong> Sensor D
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Egnion Yomi IOT</title>
+    <title>Egnion Yomi ESP-MS</title>
 
     <!-- BOOTSTRAP STYLES-->
     <link href="css/bootstrap.css" rel="stylesheet" />
