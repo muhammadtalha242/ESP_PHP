@@ -13,7 +13,7 @@ if (mysqli_connect_errno()) {
 If you paste that link to your browser, it should update b1 value with this TX.php file. Read more details below.
 The ESP will send a link like the one above but with more than just b1. It will have b1, b2, etc...
 
-http://localhost/IOTFRIDGE/Sendtest/TX.php?esp=1&s1=1&s2=1&s3=1&s4=1&s5=1&s6=1&s7=1&s8=1&s9=1&s10=1&s11=1&s12=1
+http://localhost/IOTFRIDGE/php/TX.php?esp=1&s1=1&s2=1&s3=1&s4=1&s5=1&s6=1&s7=1&s8=1&s9=1&s10=1&s11=1&s12=1
 
 */
 //We loop through and grab variables from the received the URL
@@ -32,7 +32,7 @@ foreach ($_REQUEST as $key => $value)  //Save the received value to the hey vari
 		// echo 'INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','1', now(), $sensor1)';
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('(SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 1 and connected_sensors.esp_id=$esp)','$esp','1', now(), $sensor1);");
 		
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 1 and connected_sensors.esp_id=$esp), now(),$sensor1)");
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO13'), now(),$sensor1)");
 
 		
 	}
@@ -40,7 +40,7 @@ foreach ($_REQUEST as $key => $value)  //Save the received value to the hey vari
 		$sensor2 = $value;
 		
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','2', now(), $sensor2)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 2 and connected_sensors.esp_id=$esp), now(),$sensor2)");
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO18'), now(),$sensor2)");
 
 
 		
@@ -48,7 +48,7 @@ foreach ($_REQUEST as $key => $value)  //Save the received value to the hey vari
 	if ($key == "s3") {
 		$sensor3 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','3', now(), $sensor3)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 3 and connected_sensors.esp_id=$esp), now(),$sensor3)");
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO19'), now(),$sensor3)");
 
 
 		
@@ -57,58 +57,58 @@ foreach ($_REQUEST as $key => $value)  //Save the received value to the hey vari
 	if ($key == "s4") {
 		$sensor4 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','4', now(), $sensor4)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 4 and connected_sensors.esp_id=$esp), now(),$sensor4)");
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO2'), now(),$sensor4)");
 
 		
 	}
 	if ($key == "s5") {
 		$sensor5 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','5', now(), $sensor5)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 5 and connected_sensors.esp_id=$esp), now(),$sensor5)");
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO23'), now(),$sensor5)");
 
 	
 	}
 	if ($key == "s6") {
 		$sensor6 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','6', now(), $sensor6)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 6 and connected_sensors.esp_id=$esp), now(),$sensor6)");
-	
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO25'), now(),$sensor6)");
+
 	}
 	if ($key == "s7") {
 		$sensor7 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','7', now(), $sensor7)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 7 and connected_sensors.esp_id=$esp), now(),$sensor7)");
-	
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO34'), now(),$sensor7)");
+
 	}
 	if ($key == "s8") {
 		$sensor8 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','8', now(), $sensor8)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 8 and connected_sensors.esp_id=$esp), now(),$sensor8)");
-	
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO35'), now(),$sensor8)");
+
 	}
 	if ($key == "s9") {
 		$sensor9 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','9', now(), $sensor9)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 9 and connected_sensors.esp_id=$esp), now(),$sensor9)");
-	
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO36'), now(),$sensor9)");
+
 	}
 	if ($key == "s10") {
 		$sensor10 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','10', now(), $sensor10)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 10 and connected_sensors.esp_id=$esp), now(),$sensor10)");
-	
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO39'), now(),$sensor10)");
+
 	}
 	if ($key == "s11") {
 		$sensor11 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','11', now(), $sensor11)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 11 and connected_sensors.esp_id=$esp), now(),$sensor11)");
-	
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO32'), now(),$sensor11)");
+
 	}
 	if ($key == "s12") {
 		$sensor12 = $value;
 		// mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,esp_id,sensor_id,time, value) VALUES ('$esp','$esp','12', now(), $sensor12)");
-		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM connected_sensors where connected_sensors.sensor_id = 12 and connected_sensors.esp_id=$esp), now(),$sensor12)");
-	
+		mysqli_query($conn, "INSERT INTO sensors_data (connected_sersor_id,time, value) VALUES ((SELECT connected_sensors.ID FROM `connected_sensors`INNER JOIN `used_pins` ON used_pins.connected_sersor_id=connected_sensors.ID INNER JOIN `pins` ON pins.ID=used_pins.pin_id WHERE connected_sensors.esp_id=$esp and pins.pin_name='GPIO33'), now(),$sensor12)");
+
 	}
 	
 } //End of foreach
