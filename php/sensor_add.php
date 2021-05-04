@@ -74,14 +74,23 @@
         $sql1 = "INSERT INTO `connected_sensors`(`label`, `esp_id`, `sensor_id`) VALUES ('$label',$espID,$sensor)";
         $sql2 = "SELECT ID FROM `connected_sensors` WHERE esp_id=$espID ORDER BY connected_sensors.ID DESC LIMIT 1";
         $sql3 = "SELECT ID FROM `pins` WHERE pin_number = $pin";
+        $sqllqs1 = "SELECT * FROM `output_controls` WHERE `esp_id`=$espID";
         mysqli_query($con,$sql1);
+        $res1a = mysqli_fetch_assoc(mysqli_query($con,$sqllqs1));
         $result2 = mysqli_fetch_assoc(mysqli_query($con,$sql2));
         $result3 = mysqli_fetch_assoc(mysqli_query($con,$sql3));
         $csid = $result2['ID'];
         $pid = $result3['ID'];
         if($pid >=7 && $pid <=12){
-            $sqllqs = "INSERT INTO `output_controls`(`esp_id`) VALUES ($espID)";
-            mysqli_query($con,$sqllqs);
+            if($res1a ==null){
+                echo ("Not in table");
+                $sqllqs = "INSERT INTO `output_controls`(`esp_id`) VALUES ($espID)";
+                mysqli_query($con,$sqllqs);
+            }
+            else{
+                echo ("In table");
+            }
+
         }
         $sql4 = "INSERT INTO `used_pins`(`connected_sersor_id`, `pin_id`) VALUES ($csid,$pid)";
         mysqli_query($con, $sql4);		

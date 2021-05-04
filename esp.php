@@ -24,6 +24,7 @@ $esp_name = '';
 $esp_id = 2;
 $connected = 0;
 $SensorLabel = "";
+$IS = 1;
 
 //Unused
 // $sname='';
@@ -123,17 +124,31 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
     <script type='text/javascript' src='js/jquery/jquery-ui-1.10.1.custom.min.js'></script>
 
     <script type="text/javascript">
-    $(document).ready(function() {
-        window.setTimeout(function() {
-            alert(<?php echo $_GET['id'] ?>);
-            $.post('./php/get_digital_input.php', {
-                espID: <?php echo $_GET['id'] ?>
-            }, function(data) {
-                console.log("data is:" + data);
-                alert(data);
-            });
-        }, 1000);
-    });
+    var myVar = setInterval(myTimer, 4000);
+
+    function myTimer() {
+        $.post('./php/get_digital_input.php', {
+            espID: <?php echo $_GET['id']; ?>
+        }, function(data) {
+            console.log('Data returned:' + data + '.');
+            var s = String(data);
+            var S = s.split('-');
+            <?php $IS = 1; ?>
+            console.log(S);
+            for (i = 1; i < S.length; i++) {
+                if (S[i] == 0) {
+                    // console.log("Js loop: " + i + " Php Count: " + <?php echo $IS ?> + ", Red");
+                    document.getElementById(i).style.backgroundColor = "rgba(192, 103, 103, 0.75)";
+                } else {
+                    // console.log("Js loop: " + i + " Php Count: " + <?php $IS ?> + ", Green");
+                    document.getElementById(i).style.backgroundColor =
+                        "rgba(103, 192, 103, 0.75)";
+                }
+                <?php echo $IS++; ?>
+            }
+
+        });
+    }
     </script>
 
     <script>
