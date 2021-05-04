@@ -23,7 +23,6 @@ $res = $q->fetch_assoc();
 
 $_SESSION['rainbow_username']=$res['username'];
 $_SESSION['rainbow_uid']=$res['id'];
-$_SESSION['rainbow_name']=$res['name'];
 
 echo '<script type="text/javascript">window.location="index.php"; </script>';
 
@@ -44,11 +43,6 @@ $error = 'Invalid Username or Password';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Egnion Yomi ESP-MS</title>
-    <script>
-    function signup() {
-        alert("Hello World");
-    }
-    </script>
     <!-- BOOTSTRAP STYLES-->
     <link href="css/bootstrap.css" rel="stylesheet" />
     <!-- FONTAWESOME STYLES-->
@@ -100,9 +94,6 @@ $error = 'Invalid Username or Password';
                             <button class="btn btn-primary" type="submit" name="login">Login Now</button>
                         </div>
                     </form>
-                    <div class="form-group">
-                        <button class="btn btn-primary" type="submit" onclick="signup()" name="login">Sign UP</button>
-                    </div>
                 </div>
 
             </div>

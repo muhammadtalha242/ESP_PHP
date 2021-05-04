@@ -5,20 +5,18 @@ include("php/checklogin.php");
 $error = '';
 if(isset($_POST['save']))
 {
-    $oldpassword = mysqli_real_escape_string($conn,$_POST['oldpassword']);
-    $newpassword = mysqli_real_escape_string($conn,$_POST['newpassword']);
-    $sql = "select * from user where id= '".$_SESSION['rainbow_uid']."' and password='".md5($oldpassword )."'";
+    $username = mysqli_real_escape_string($conn,$_POST['username']);
+    $email = mysqli_real_escape_string($conn,$_POST['email']);
+    $password = mysqli_real_escape_string($conn,$_POST['password']);
+    $sql = "select * from user where emailid='$email' OR username='$username'";
     $q = $conn->query($sql);
-    if($q->num_rows>0) {
-        $sql = "update user set  password = '".md5($newpassword)."' WHERE id = '".$_SESSION['rainbow_uid']."'";
-        $r = $conn->query($sql);
-        echo '<script type="text/javascript">window.location="setting.php?act=1"; </script>';
+    if($q->num_rows<=0) {
+        $sqli = "INSERT INTO `user`(`emailid`, `password`, `username`, `lastlogin`) VALUES ('$email','".md5($password)."','$username','".time()."')";
+        $q = $conn->query($sqli);
+        echo '<script type="text/javascript">window.location="add_user.php?act=1"; </script>';
     }
-    else {
-        $error = '<div class="alert alert-danger">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Error!</strong> Wrong old password
-        </div>';
+    else{
+        echo '<script type="text/javascript">window.location="add_user.php?act=2"; </script>';
     }
 }
 
@@ -55,67 +53,66 @@ include("php/header.php");
             <div class="col-md-12">
                 <h1 class="page-head-line">Add User</h1>
                 <?php
-if(isset($_REQUEST['act']) &&  @$_REQUEST['act']=='1')
-{
-echo '<div class="alert alert-success">
-  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-  <strong>Success!</strong> Password Change Successfully.
-</div>';
-
-}
-echo $error;
-?>
+                if(isset($_REQUEST['act']) &&  @$_REQUEST['act']=='1') {
+                    echo '<div class="alert alert-success">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Success!</strong> User Added Successfully.
+                    </div>';
+                }
+                if(isset($_REQUEST['act']) &&  @$_REQUEST['act']=='2') {
+                    echo '<div class="alert alert-danger">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Failure!</strong> User Not added another user exists with same Email or User-name.
+                    </div>';
+                }
+                echo $error;
+                ?>
             </div>
         </div>
         <!-- /. ROW  -->
         <div class="row">
-
             <div class="col-sm-8 col-sm-offset-2">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         Add New User
                     </div>
-                    <form action="setting.php" method="post" id="signupForm1" class="form-horizontal">
+                    <form action="add_user.php" method="post" id="signupForm1" class="form-horizontal">
                         <div class="panel-body">
                             <div class="form-group">
                                 <label class="col-sm-4 control-label" for="Old">User Name</label>
                                 <div class="col-sm-5">
-                                    <input type="password" class="form-control" id="oldpassword" name="oldpassword" />
+                                    <input type="text" class="form-control" id="username" name="username" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-4 control-label" for="Password">Email</label>
+                                <label class="col-sm-4 control-label" for="Old">Email</label>
                                 <div class="col-sm-5">
-                                    <input class="form-control" name="newpassword" id="newpassword" type="password">
+                                    <input type="text" class="form-control" id="email" name="email" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-4 control-label" for="Confirm">Password</label>
+                                <label class="col-sm-4 control-label" for="Password">Password</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" name="password" id="password" type="password">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="Confirm">Confirm Password</label>
                                 <div class="col-sm-5">
                                     <input class="form-control" name="confirmpassword" type="password">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-9 col-sm-offset-4">
-                                    <button type="submit" name="save" class="btn btn-primary">Add </button>
+                                    <button type="submit" name="save" class="btn btn-primary">Add</button>
                                 </div>
                             </div>
-
-
-
-
-
                         </div>
                     </form>
-
                 </div>
             </div>
-
-
         </div>
         <!-- /. ROW  -->
-
-
     </div>
     <!-- /. PAGE INNER  -->
 </div>
@@ -134,25 +131,25 @@ $(document).ready(function() {
 
     $("#signupForm1").validate({
         rules: {
+            username: "required",
+            email: "required",
             oldpassword: "required",
-
-            newpassword: {
+            password: {
                 required: true,
                 minlength: 6
             },
-
             confirmpassword: {
                 required: true,
                 minlength: 6,
-                equalTo: "#newpassword"
+                equalTo: "#password"
             }
         },
         messages: {
-            oldpassword: "Please enter your old password",
-
-            newpassword: {
-                required: "Please provide a password",
-                minlength: "Your password must be at least 6 characters long"
+            username: {
+                required: "Please provide a User-name.",
+            },
+            email: {
+                required: "Please provide an email for the user",
             },
             confirmpassword: {
                 required: "Please provide a password",
@@ -164,17 +161,14 @@ $(document).ready(function() {
         errorPlacement: function(error, element) {
             // Add the `help-block` class to the error element
             error.addClass("help-block");
-
             // Add `has-feedback` class to the parent div.form-group
             // in order to add icons to inputs
             element.parents(".col-sm-5").addClass("has-feedback");
-
             if (element.prop("type") === "checkbox") {
                 error.insertAfter(element.parent("label"));
             } else {
                 error.insertAfter(element);
             }
-
             // Add the span element, if doesn't exists, and apply the icon classes to it.
             if (!element.next("span")[0]) {
                 $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>")
