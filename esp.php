@@ -118,20 +118,21 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
     <link href="css/datepicker.css" rel="stylesheet" />
 
     <script src="js/jquery-1.10.2.js"></script>
-
+    <script type="text/javascript" src="./js/jquery/jquery-3.6.0.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script type='text/javascript' src='js/jquery/jquery-ui-1.10.1.custom.min.js'></script>
 
     <script type="text/javascript">
     $(document).ready(function() {
-        setTimeout(function() {
+        window.setTimeout(function() {
+            alert(<?php echo $_GET['id'] ?>);
             $.post('./php/get_digital_input.php', {
                 espID: <?php echo $_GET['id'] ?>
             }, function(data) {
                 console.log("data is:" + data);
-                echo(data);
+                alert(data);
             });
-        }, 2000);
+        }, 1000);
     });
     </script>
 
