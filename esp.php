@@ -130,7 +130,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
             let selectedValue4 = $("#sensordropdown2 option:selected").text();
             if (selectedValue1 == "-1") {
                 alert("Kindly Select a Sensor.");
-            } else if (selectedValue2 == "-1" && selectedValue4 != "TX & RX") {
+            } else if ((selectedValue2 <= "0" && selectedValue2 > "40") || selectedValue2 == null) {
                 alert("Kindly Select a pin.");
             } else if (selectedValue3 == "") {
                 alert("Kindly provide a label for the sensor")
@@ -185,7 +185,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
                     if (S[0] == "Communication") {
                         document.getElementById("sensordropdown2").setAttribute("Disabled", "");
                         document.getElementById("sensordropdown2").innerHTML =
-                            "<option value=-2>" + "TX & RX" + "</option>";
+                            "<option value=40>" + "TX & RX" + "</option>";
                         document.getElementById("sensoradd").removeAttribute("Disabled", "");
                     }
                 } else {
@@ -576,22 +576,34 @@ include("php/header.php");
 
 						?>
                     </div>
-                    <div class='bg-danger text-white col-md-6 display-main' id='digital-input'>Digital-input</div>
-                    <div class=' text-white col-md-6 display-main' id='analog-input'></div>
-                    <form action="esp.php" method="post" id="signupForm1" class="form-horizontal">
-                        <div class="panel-body">
-                            <fieldset class="scheduler-border">
-                                <legend class="scheduler-border">Digital Output:</legend>
-                                <div class="form-group" id='digital-output'>
+                    <div class="panel-body">
+                        <fieldset class="scheduler-border">
+                            <legend class="scheduler-border">Digital Input:</legend>
+                            <div class="form-group" id='digital-input'>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="panel-body">
+                        <fieldset class="scheduler-border">
+                            <legend class="scheduler-border">Analog Input:</legend>
+                            <div class="form-group" id='analog-input'>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- <div class='bg-danger text-white col-md-6 display-main' id='digital-input'>Digital-input</div>
+                    <div class=' text-white col-md-6 display-main' id='analog-input'></div> -->
 
-                                </div>
-                            </fieldset>
-                    </form>
-
+                    <div class="panel-body">
+                        <fieldset class="scheduler-border">
+                            <legend class="scheduler-border">Digital Output:</legend>
+                            <div class="form-group" id='digital-output'>
+                            </div>
+                        </fieldset>
+                    </div>
                     <!-- <div class='bg-danger text-white col-sm-10 col-sm-offset-1 display-main' id='digital-output'> -->
-                </div>
 
-                <?php
+
+                    <?php
 				$i = 0;
 				while ($r = $q->fetch_assoc()) {
 
@@ -608,171 +620,138 @@ include("php/header.php");
 					$i++;
 					if ($typ == 1) {
 						if ($iomode == 1) { ?>
-                <script>
-                var label = '<?php echo $SensorLabel; ?>'
+                    <script>
+                    var label = '<?php echo $SensorLabel; ?>'
 
-                $(`<div class='digital_input_div'><button class='digital_input_btn' disabled></button> <span class='digital_input_span'>${label}</span> </div>`)
-                    .appendTo("#digital-input");
-                </script>
-                <?php } else { ?>
-                <script>
-                // function test(event) {
-                // 	console.log("Hereerree")
-                // 	// $('.output_checkbox input[type=checkbox]').val();
-                // 	console.log(event.target.attributes)
+                    $(`
+                    <div class='col-sm-4'>
+                        <div id='outer-div'>
+                            <div id='inner-div' class='digital_input_div'>
+                                <button class='digital_input_btn' disabled style='padding-left:10px'></button>
+                                <span class='digital_input_span' style='text-align:center;'>${label}</span> 
+                            </div>
+                        </div>
+                    </div>
+                    `).appendTo("#digital-input");
+                    </script>
+                    <?php } else { ?>
+                    <script>
+                    var label = '<?php echo $SensorLabel; ?>'
+                    var pin_name = '<?php echo $Connected_pin_name; ?>'
+                    var pin_id = '<?php echo $Connected_pin_id; ?>'
+                    var pin_number = '<?php echo $Connected_pin_number; ?>'
 
-                // 	console.log(event.target.attributes['pin_id'])
-                // 	console.log(event)
-                // 	let pin_id = event.target.attributes['pin_id'];
-                // 	let pin_name = event.target.attributes['pin_name'];
-                // 	let pin_number = event.target.attributes['pin_number'];
+                    $(`
+                    <div class='col-sm-4'>
+                        <div id='outer-div'>
+                            <div id='inner-div' class='digital_input_div'>
+								<label class='switch'><input class='output_checkbox' data-pin_name=${pin_name} data-pin_id=${pin_id} data-pin_number=${pin_number} data-label=${label}   type='checkbox' value='0'><span class='slider round'></span></label><span class='digital_output_span'></span>	
+                                <label class="col-sm-12 control-label" for="Old">${label} </label>
+                            </div>
+                        </div>
+                    </div>
+                    `).appendTo("#digital-output");
+                    // $(`<div class='digital_input_div'><label class='switch'><input class='output_checkbox' id=${pin_name} onClick='test()' type='checkbox' value='1'><span class='slider round'></span></label><span class='digital_output_span'>${label}</span></div>`)
+                    // .appendTo("#digital-output");
+                    </script>
+                    <?php } ?>
+                    <?php } else { ?>
+                    <script>
+                    var label = '<?php echo $SensorLabel; ?>'
+                    $(`<div id=${label} class='col-sm-12' style='height: 350px; width:700px;margin-bottom: 20px'></div>`)
+                        .appendTo(
+                            "#analog-input")
 
-                // 	let label = event.target.attributes['label'];
-                // 	let output = 0;
-                // 	if ($('input.output_checkbox').is(':checked')) {
-                // 		console.log("inside checked Value : " + output);
-                // 		output = 1;
+                    function SimpleLineChart() {
+                        var chart = new CanvasJS.Chart(label, {
+                            animationEnabled: true,
+                            theme: "light2",
+                            title: {
+                                text: label
+                            },
+                            axisY: {
+                                includeZero: false
+                            },
+                            data: [{
+                                type: "line",
+                                dataPoints: [{
+                                        y: 450
+                                    },
+                                    {
+                                        y: 414
+                                    },
+                                    {
+                                        y: 520,
+                                        indexLabel: "highest",
+                                        markerColor: "red",
+                                        markerType: "triangle"
+                                    },
+                                    {
+                                        y: 460
+                                    },
+                                    {
+                                        y: 450
+                                    },
+                                    {
+                                        y: 500
+                                    },
+                                    {
+                                        y: 480
+                                    },
+                                    {
+                                        y: 480
+                                    },
+                                    {
+                                        y: 410,
+                                        indexLabel: "lowest",
+                                        markerColor: "DarkSlateGrey",
+                                        markerType: "cross"
+                                    },
+                                    {
+                                        y: 500
+                                    },
+                                    {
+                                        y: 480
+                                    },
+                                    {
+                                        y: 510
+                                    }
+                                ]
+                            }]
+                        });
+                        chart.render();
 
-                // 	}
-                // 	console.log("outside checked Value : " + output);
-                // 	$.post('./php/output_controls.php', {
-                // 		pin_id: pin_id,
-                // 		pin_name: pin_name,
-                // 		pin_number: pin_number,
-                // 		label: label,
-                // 		output: output,
-                // 		esp_id: '14'
-                // 	}, function(data) {
-                // 		console.log(data);
-                // 		if (data == 0) {
-                // 			alert("not updated")
-                // 		} else {
-                // 			alert("updated")
-                // 		}
-                // 	});
-                // 	output = 0;
-
-                // } -->
-
-                var label = '<?php echo $SensorLabel; ?>'
-                var pin_name = '<?php echo $Connected_pin_name; ?>'
-                var pin_id = '<?php echo $Connected_pin_id; ?>'
-                var pin_number = '<?php echo $Connected_pin_number; ?>'
-
-                $(`<div class="form-group">
-										<label class="col-sm-2 control-label" for="Old">${label} </label>
-										<div class="col-sm-10">
-										<label class='switch'><input class='output_checkbox' data-pin_name=${pin_name} data-pin_id=${pin_id} data-pin_number=${pin_number} data-label=${label}   type='checkbox' value='0'><span class='slider round'></span></label><span class='digital_output_span'></span>
-											
-										</div>
-								</div>`).appendTo("#digital-output");
-                // $(`<div class='digital_input_div'><label class='switch'><input class='output_checkbox' id=${pin_name} onClick='test()' type='checkbox' value='1'><span class='slider round'></span></label><span class='digital_output_span'>${label}</span></div>`)
-                // .appendTo("#digital-output");
-                </script>
-                <?php } ?>
-                <?php } else { ?>
-                <script>
-                var label = '<?php echo $SensorLabel; ?>'
-                $(`<div id=${label} style='height: 300px; width:700px'></div>`).appendTo("#analog-input")
-
-
-                function SimpleLineChart() {
-
-                    var chart = new CanvasJS.Chart(label, {
-                        animationEnabled: true,
-                        theme: "light2",
-                        title: {
-                            text: label
-                        },
-                        axisY: {
-                            includeZero: false
-                        },
-                        data: [{
-                            type: "line",
-                            dataPoints: [{
-                                    y: 450
-                                },
-                                {
-                                    y: 414
-                                },
-                                {
-                                    y: 520,
-                                    indexLabel: "highest",
-                                    markerColor: "red",
-                                    markerType: "triangle"
-                                },
-                                {
-                                    y: 460
-                                },
-                                {
-                                    y: 450
-                                },
-                                {
-                                    y: 500
-                                },
-                                {
-                                    y: 480
-                                },
-                                {
-                                    y: 480
-                                },
-                                {
-                                    y: 410,
-                                    indexLabel: "lowest",
-                                    markerColor: "DarkSlateGrey",
-                                    markerType: "cross"
-                                },
-                                {
-                                    y: 500
-                                },
-                                {
-                                    y: 480
-                                },
-                                {
-                                    y: 510
-                                }
-                            ]
-                        }]
-                    });
-                    chart.render();
-
-                }
-                // $("#analog-input").load("C:\\Users\\Dexter\\Downloads\\Programs\\sample_chartjs\\examples\\10-dynamic-charts\\dynamic-multi-series-chart.html"); <
-                SimpleLineChart();
-                </script>
+                    }
+                    // $("#analog-input").load("C:\\Users\\Dexter\\Downloads\\Programs\\sample_chartjs\\examples\\10-dynamic-charts\\dynamic-multi-series-chart.html"); <
+                    SimpleLineChart();
+                    </script>
 
 
-                <?php } ?>
+                    <?php } ?>
 
 
-                <?php } ?>
+                    <?php } ?>
 
 
-                <?php } ?>
+                    <?php } ?>
 
 
+                </div>
+                <!-- /. PAGE INNER  -->
             </div>
-            <!-- /. PAGE INNER  -->
+            <!-- /. PAGE WRAPPER  -->
         </div>
-        <!-- /. PAGE WRAPPER  -->
-    </div>
-    <!-- /. WRAPPER  -->
-    <!--
-        <div id="footer-sec">
-            School Fees Payment System | Brought To You By : <a href="http://code-projects.org/"
-                target="_blank">Code-Projects</a>
-        </div>
--->
+        <!-- /. WRAPPER  -->
 
-    <!-- BOOTSTRAP SCRIPTS -->
-    <script src="js/bootstrap.js"></script>
-    <!-- METISMENU SCRIPTS -->
-    <script src="js/jquery.metisMenu.js"></script>
-    <!-- CUSTOM SCRIPTS -->
-    <script src="js/custom1.js"></script>
-    <!-- Canvas JS -->
+        <!-- BOOTSTRAP SCRIPTS -->
+        <script src="js/bootstrap.js"></script>
+        <!-- METISMENU SCRIPTS -->
+        <script src="js/jquery.metisMenu.js"></script>
+        <!-- CUSTOM SCRIPTS -->
+        <script src="js/custom1.js"></script>
+        <!-- Canvas JS -->
 
 
-    </body>
+        </body>
 
 </html>
