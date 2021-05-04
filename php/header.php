@@ -31,23 +31,25 @@
 
 
                     <li>
-                        <a class="active-menu" href="index.php"><i class="fa fa-dashboard "></i>Dashboard</a>
+                        <a class="active-menu" href="index.php"><i class="fa fa-dashboard"></i>Dashboard</a>
                     </li>
 
                     <li>
-                        <a href="esp.php"><i class="fa fa-users "></i>ESP Node</a>
+                        <a href="esp.php"><i class="fa fa-cogs"></i>ESP Node</a>
                     </li>
 
                     <li>
                         <a href="sensors.php"><i class="fa fa-cogs"></i>Sensors</a>
                     </li>
-
+                    <li>
+                        <a href="add_user.php"><i class="fa fa-user-plus"></i>Add User</a>
+                    </li>
                     <li>
                         <a href="setting.php"><i class="fa fa-cog"></i>Setting</a>
                     </li>
 
                     <li>
-                        <a href="logout.php"><i class="fa fa-power-off "></i>Logout</a>
+                        <a href="logout.php"><i class="fa fa-power-off"></i>Logout</a>
                     </li>
 
 

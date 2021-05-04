@@ -102,8 +102,8 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
     <meta charset="utf-8" />
     <meta http-equiv="refresh" content="<?php echo $sec ?>;URL='<?php echo $page ?>'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>egnion_yomi</title>
-
+    <title>Egnion Yomi ESP-MS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- BOOTSTRAP STYLES-->
     <link href="css/bootstrap.css" rel="stylesheet" />
     <!-- FONTAWESOME STYLES-->
