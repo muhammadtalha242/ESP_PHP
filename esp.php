@@ -127,43 +127,81 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
     function addchart(label) {
         var dataPoints = [];
         var chart;
-        $.getJSON(
-            "https://canvasjs.com/services/data/datapoints.php?xstart=1&ystart=10&length=10&type=json",
-            function(data) {
-                $.each(data, function(key, value) {
-                    dataPoints.push({
-                        y: parseInt(value[1])
-                    });
+        $.post('./php/get_analog_input.php', {
+            espID: <?php echo $_GET['id']; ?>,
+            label: label,
+            update: 0
+        }, function(data) {
+            var s = String(data);
+            var S = s.split("-");
+            for (var i = 1; i < s.length; i++) {
+                dataPoints.push({
+                    y: parseInt(S[i])
                 });
-                chart = new CanvasJS.Chart(label, {
-                    animationEnabled: true,
-                    theme: "dark2",
-                    title: {
-                        text: label
-                    },
-                    axisX: {
-                        title: "Time"
-                    },
-                    axisY: {
-                        title: "Value"
-                    },
-                    data: [{
-                        type: "line",
-                        dataPoints: dataPoints,
-                    }]
-                });
-                chart.render();
-                updateChart();
+            }
+            chart = new CanvasJS.Chart(label, {
+                zoomEnabled: true,
+                animationEnabled: true,
+                backgroundColor: "rgba(30,45,55,1)",
+                color: "rgba(15,185,130,1)",
+                theme: "dark2",
+                title: {
+                    text: label
+                },
+                axisX: {
+                    title: "Time"
+                },
+                axisY: {
+                    title: "Value"
+                },
+                data: [{
+                    type: "line",
+                    dataPoints: dataPoints,
+                }]
             });
-
+            chart.render();
+            updateChart();
+        });
+        /*
+                $.getJSON(
+                    "https://canvasjs.com/services/data/datapoints.php?xstart=1&ystart=10&length=10&type=json",
+                    function(data) {
+                        $.each(data, function(key, value) {
+                            dataPoints.push({
+                                y: parseInt(value[1])
+                            });
+                        });
+                        chart = new CanvasJS.Chart(label, {
+                            zoomEnabled: true,
+                            animationEnabled: true,
+                            backgroundColor: "rgba(30,45,55,1)",
+                            color: "rgba(15,185,130,1)",
+                            theme: "dark2",
+                            title: {
+                                text: label
+                            },
+                            axisX: {
+                                title: "Time"
+                            },
+                            axisY: {
+                                title: "Value"
+                            },
+                            data: [{
+                                type: "line",
+                                dataPoints: dataPoints,
+                            }]
+                        });
+                        chart.render();
+                        updateChart();
+                    });
+        */
         function updateChart() {
-            $.getJSON("https://canvasjs.com/services/data/datapoints.php?xstart=" + (dataPoints
+            /*$.getJSON("https://canvasjs.com/services/data/datapoints.php?xstart=" + (dataPoints
                     .length + 1) + "&ystart=" + (dataPoints[dataPoints.length - 1].y) +
                 "&length=1&type=json",
                 function(data) {
                     $.each(data, function(key, value) {
                         dataPoints.push({
-                            x: parseInt(value[0]),
                             y: parseInt(value[1])
                         });
                     });
@@ -171,8 +209,23 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
                     setTimeout(function() {
                         updateChart()
                     }, 500);
+                });*/
+            $.post('./php/get_analog_input.php', {
+                    espID: <?php echo $_GET['id']; ?>,
+                    label: label,
+                    update: 1
+                },
+                function(data) {
+                    dataPoints.push({
+                        y: parseInt(data)
+                    });
+                    chart.render();
+                    setTimeout(function() {
+                        updateChart()
+                    }, 500);
                 });
-        }
+
+        };
     }
     </script>
     <script type="text/javascript">
@@ -740,7 +793,7 @@ include("php/header.php");
                     // .appendTo("#digital-output");
                     </script>
                     <?php } ?>
-                    <?php } else { ?>
+                    <?php } if ($typ == 0 && $iomode == 1) { ?>
                     <script>
                     var label = '<?php echo $SensorLabel; ?>'
                     $(`<div id=${label} class='col-sm-12' style='height: 350px; width:700px;margin-bottom: 20px'></div>`)
