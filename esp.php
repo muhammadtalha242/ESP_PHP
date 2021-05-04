@@ -124,6 +124,58 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
     <script type='text/javascript' src='js/jquery/jquery-ui-1.10.1.custom.min.js'></script>
 
     <script type="text/javascript">
+    function addchart(label) {
+        var dataPoints = [];
+        var chart;
+        $.getJSON(
+            "https://canvasjs.com/services/data/datapoints.php?xstart=1&ystart=10&length=10&type=json",
+            function(data) {
+                $.each(data, function(key, value) {
+                    dataPoints.push({
+                        y: parseInt(value[1])
+                    });
+                });
+                chart = new CanvasJS.Chart(label, {
+                    animationEnabled: true,
+                    theme: "dark2",
+                    title: {
+                        text: label
+                    },
+                    axisX: {
+                        title: "Time"
+                    },
+                    axisY: {
+                        title: "Value"
+                    },
+                    data: [{
+                        type: "line",
+                        dataPoints: dataPoints,
+                    }]
+                });
+                chart.render();
+                updateChart();
+            });
+
+        function updateChart() {
+            $.getJSON("https://canvasjs.com/services/data/datapoints.php?xstart=" + (dataPoints
+                    .length + 1) + "&ystart=" + (dataPoints[dataPoints.length - 1].y) +
+                "&length=1&type=json",
+                function(data) {
+                    $.each(data, function(key, value) {
+                        dataPoints.push({
+                            x: parseInt(value[0]),
+                            y: parseInt(value[1])
+                        });
+                    });
+                    chart.render();
+                    setTimeout(function() {
+                        updateChart()
+                    }, 500);
+                });
+        }
+    }
+    </script>
+    <script type="text/javascript">
     var myVar = setInterval(myTimer, 500);
 
     function myTimer() {
@@ -141,7 +193,6 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
                 }
                 <?php echo $IS++; ?>
             }
-
         });
     }
     </script>
@@ -693,71 +744,55 @@ include("php/header.php");
                     <script>
                     var label = '<?php echo $SensorLabel; ?>'
                     $(`<div id=${label} class='col-sm-12' style='height: 350px; width:700px;margin-bottom: 20px'></div>`)
-                        .appendTo(
-                            "#analog-input")
+                        .appendTo("#analog-input");
+                    addchart(label);
+                    /*                    var yVal = 15,
+                                            updateCount = 0;
 
-                    function SimpleLineChart() {
-                        var chart = new CanvasJS.Chart(label, {
-                            animationEnabled: true,
-                            theme: "light2",
-                            title: {
-                                text: label
-                            },
-                            axisY: {
-                                includeZero: false
-                            },
-                            data: [{
-                                type: "line",
-                                dataPoints: [{
-                                        y: 450
-                                    },
-                                    {
-                                        y: 414
-                                    },
-                                    {
-                                        y: 520,
-                                        indexLabel: "highest",
-                                        markerColor: "red",
-                                        markerType: "triangle"
-                                    },
-                                    {
-                                        y: 460
-                                    },
-                                    {
-                                        y: 450
-                                    },
-                                    {
-                                        y: 500
-                                    },
-                                    {
-                                        y: 480
-                                    },
-                                    {
-                                        y: 480
-                                    },
-                                    {
-                                        y: 410,
-                                        indexLabel: "lowest",
-                                        markerColor: "DarkSlateGrey",
-                                        markerType: "cross"
-                                    },
-                                    {
-                                        y: 500
-                                    },
-                                    {
-                                        y: 480
-                                    },
-                                    {
-                                        y: 510
-                                    }
-                                ]
-                            }]
-                        });
-                        chart.render();
+                                        function updateChart() {
 
-                    }
-                    // $("#analog-input").load("C:\\Users\\Dexter\\Downloads\\Programs\\sample_chartjs\\examples\\10-dynamic-charts\\dynamic-multi-series-chart.html"); <
-                    SimpleLineChart();
+                                            yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
+                                            updateCount++;
+
+                                            dataPoints.push({
+                                                y: yVal
+                                            });
+
+                                            chart.options.title.text = "Update " + updateCount;
+                                            chart.render();
+
+                                        };
+
+                                        function SimpleLineChart() {
+                                            chart = new CanvasJS.Chart(label, {
+                                                animationEnabled: true,
+                                                theme: "dark2",
+                                                title: {
+                                                    text: label
+                                                },
+                                                axisX: {
+                                                    title: "Time",
+                                                    includeZero: false
+                                                },
+                                                axisY: {
+                                                    title: "Value",
+                                                    includeZero: false
+                                                },
+                                                data: [{
+                                                    type: "line",
+                                                    dataPoints: [{
+                                                            y: 0
+                                                        },
+                                                        {
+                                                            y: 1
+                                                        }
+                                                    ]
+                                                }]
+                                            });
+                                            chart.render();
+                                        }
+                                        SimpleLineChart();
+                                        setInterval(updateChart, 1000);*/
                     </script>
 
 
