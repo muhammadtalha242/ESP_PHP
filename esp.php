@@ -711,7 +711,24 @@ include("php/header.php");
 
 						$q = $conn->query($sql);
 
+
+                        // digital outputs values from database ************start************
+                        $sql2 = "SELECT * FROM `output_controls` WHERE esp_id=$id";
+                        $q2 = $conn->query($sql2);
+
+                        while ($outputRow = $q2->fetch_assoc()) {
+                            $GPIO26 = $outputRow["output1"];
+                            $GPIO5 = $outputRow["output2"];
+                            $GPIO27 = $outputRow["output3"];
+                            $GPIO12 = $outputRow["output4"];
+                            $GPIO14 = $outputRow["output5"];
+                            $GPIO15 = $outputRow["output6"];
+                         
+                        }
+                        $output_pins = array("GPIO26" => $GPIO26, "GPIO5" => $GPIO5, "GPIO27" => $GPIO27, "GPIO12" => $GPIO12, "GPIO14" => $GPIO14, "GPIO15" => $GPIO15);
+                        // digital outputs values from database ************end************
 						?>
+                        
                     </div>
                     <div class="panel-body">
                         <fieldset class="scheduler-border">
@@ -755,7 +772,11 @@ include("php/header.php");
 					$Connected_pin_id = $r['pin_id'];
 					$Connected_pin_number = $r['pin_number'];
 
-					$i++;
+                    // print_r($Connected_pin_name);
+                    // digital outputs values from database ************start************
+                    $output_value  =array_key_exists($Connected_pin_name, $output_pins)? $output_pins[$Connected_pin_name]:0;                                                   
+                    // digital outputs values from database ************end************
+                   $i++;
 					if ($typ == 1) {
 						if ($iomode == 1) { ?>
                     <script>
@@ -772,23 +793,29 @@ include("php/header.php");
                     </div>
                     `).appendTo("#digital-input");
                     </script>
-                    <?php } else { ?>
+                    <?php } else { 
+                          
+                        ?>
                     <script>
+                    // digital outputs values from database ************start************
+                    
                     var label = '<?php echo $SensorLabel; ?>'
                     var pin_name = '<?php echo $Connected_pin_name; ?>'
                     var pin_id = '<?php echo $Connected_pin_id; ?>'
                     var pin_number = '<?php echo $Connected_pin_number; ?>'
-
+                    var output_value = '<?php echo $output_value; ?>'
                     $(`
                     <div class='col-sm-4'>
                         <div id='outer-div'>
                             <div id='inner-div' class='digital_input_div'>
-								<label class='switch'><input class='output_checkbox' data-pin_name=${pin_name} data-pin_id=${pin_id} data-pin_number=${pin_number} data-label=${label}   type='checkbox' value='0'><span class='slider round'></span></label><span class='digital_output_span'></span>	
+								<label class='switch'><input class='output_checkbox' data-pin_name=${pin_name} data-pin_id=${pin_id} data-pin_number=${pin_number} data-label=${label}   type='checkbox'  checked ='${output_value}'><span class='slider round'></span></label><span class='digital_output_span'></span>	
                                 <label class="col-sm-12 control-label" for="Old">${label} </label>
                             </div>
                         </div>
                     </div>
                     `).appendTo("#digital-output");
+                    // digital outputs values from database ************end************
+
                     // $(`<div class='digital_input_div'><label class='switch'><input class='output_checkbox' id=${pin_name} onClick='test()' type='checkbox' value='1'><span class='slider round'></span></label><span class='digital_output_span'>${label}</span></div>`)
                     // .appendTo("#digital-output");
                     </script>
