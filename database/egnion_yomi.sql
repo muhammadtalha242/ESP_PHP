@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 04, 2021 at 01:34 PM
+-- Generation Time: May 10, 2021 at 03:12 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -54,10 +54,7 @@ INSERT INTO `connected_sensors` (`ID`, `label`, `esp_id`, `sensor_id`) VALUES
 (96, 'Switch-3', 15, 11),
 (97, 'Relay-1', 15, 9),
 (98, 'Remote-1', 15, 10),
-(99, 'Relay-2', 15, 9),
-(100, '0', 15, 0),
-(101, '0', 15, 0),
-(102, '0', 15, 0);
+(99, 'Relay-2', 15, 9);
 
 -- --------------------------------------------------------
 
@@ -103,7 +100,7 @@ CREATE TABLE `output_controls` (
 --
 
 INSERT INTO `output_controls` (`ID`, `esp_id`, `output1`, `output2`, `output3`, `output4`, `output5`, `output6`) VALUES
-(3, 15, 0, 0, 1, 0, 0, 1);
+(3, 15, 1, 1, 1, 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -188,20 +185,36 @@ CREATE TABLE `sensors_data` (
   `ID` int(11) NOT NULL,
   `connected_sersor_id` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `value` varchar(1000) NOT NULL
+  `value` varchar(1000) NOT NULL,
+  `Type` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `sensors_data`
 --
 
-INSERT INTO `sensors_data` (`ID`, `connected_sersor_id`, `time`, `value`) VALUES
-(188, 83, '2021-05-04 11:11:15', '0'),
-(189, 88, '2021-05-04 11:28:58', '0'),
-(190, 89, '2021-05-04 01:18:43', '1'),
-(191, 90, '2021-05-04 11:28:53', '1'),
-(192, 91, '2021-05-04 11:29:12', '0'),
-(193, 92, '2021-05-04 01:18:54', '1');
+INSERT INTO `sensors_data` (`ID`, `connected_sersor_id`, `time`, `value`, `Type`) VALUES
+(188, 83, '2021-05-04 17:04:51', '0', 1),
+(189, 88, '2021-05-04 17:04:59', '1', 1),
+(190, 89, '2021-05-04 17:05:02', '1', 1),
+(191, 90, '2021-05-04 17:05:04', '1', 1),
+(192, 91, '2021-05-04 17:05:07', '1', 1),
+(193, 92, '2021-05-04 17:05:12', '0', 1),
+(194, 93, '2021-05-04 12:44:26', '20', 0),
+(195, 84, '2021-05-04 12:44:26', '32', 0),
+(196, 87, '2021-05-04 12:44:26', '43', 0),
+(197, 93, '2021-05-04 12:45:26', '18', 0),
+(198, 84, '2021-05-04 12:45:26', '53', 0),
+(199, 87, '2021-05-04 12:45:26', '23', 0),
+(200, 93, '2021-05-04 12:46:26', '40', 0),
+(201, 84, '2021-05-04 12:46:26', '22', 0),
+(202, 87, '2021-05-04 12:46:26', '33', 0),
+(203, 93, '2021-05-04 12:47:26', '51', 0),
+(204, 84, '2021-05-04 12:47:26', '32', 0),
+(205, 87, '2021-05-04 12:47:26', '42', 0),
+(206, 93, '2021-05-04 12:48:26', '23', 0),
+(207, 84, '2021-05-04 12:48:26', '43', 0),
+(208, 87, '2021-05-04 12:48:26', '54', 0);
 
 -- --------------------------------------------------------
 
@@ -248,16 +261,17 @@ CREATE TABLE `user` (
   `emailid` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
-  `lastlogin` datetime NOT NULL,
-  `name` varchar(255) NOT NULL
+  `lastlogin` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `emailid`, `password`, `username`, `lastlogin`, `name`) VALUES
-(1, 'shahab6674@gmail.com', 'a60d3e842fa9ab490e39460aa6e446b1', 'admin', '2021-04-28 17:10:31', 'egnion');
+INSERT INTO `user` (`id`, `emailid`, `password`, `username`, `lastlogin`) VALUES
+(1, 'shahab6674@gmail.com', 'a60d3e842fa9ab490e39460aa6e446b1', 'admin', '2021-04-28 17:10:31'),
+(7, '150862@students.au.edu.pk', 'a60d3e842fa9ab490e39460aa6e446b1', 'wardroid0404', '0000-00-00 00:00:00'),
+(8, 'wardroid0404@gmail.com', 'a60d3e842fa9ab490e39460aa6e446b1', 'wardroid', '0000-00-00 00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -349,7 +363,7 @@ ALTER TABLE `sensors`
 -- AUTO_INCREMENT for table `sensors_data`
 --
 ALTER TABLE `sensors_data`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=194;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=209;
 
 --
 -- AUTO_INCREMENT for table `used_pins`
@@ -361,7 +375,7 @@ ALTER TABLE `used_pins`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
